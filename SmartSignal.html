@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
     <html lang="vi">
     <head>
@@ -231,13 +232,13 @@
             <div class="clock-box">
                 <span class="time-value" id="live-clock">00:00:00 - 01/01/2026</span>
                 </div class="time-left"> <select class="time-select" id="mode-select" onchange="sendmode(this.value)">
-                <option value="mode_auto">Ch?  ?: T?  ?ng</option>
-                <option value="mode_manual">Ch?  ?: Th? C ng</option>
-                <option value="mode_test">Ch?  ?: Ch?p  V ng</option>
+                <option value="mode_auto">Chế Độ: Tự Động</option>
+                <option value="mode_manual">Chế Độ: Thủ Công</option>
+                <option value="mode_test">Chế Độ: Chớp  Vàng</option>
                 </select><select class="mac-select" id="mac-list-dropdown" onchange="if(this.value) websocket.send(JSON.stringify({action:'select_mac', value:this.value}));">
-                <option value="">-- DANH S CH MAC --</option></select>
+                <option value="">-- DANH SÁCH MAC --</option></select>
                 <input type="time" step="1" class="time-select" id="timer-input" style="color:#ff9f43; font-family:monospace; font-size:1.2rem; padding:8px 10px;">
-                <button class="btn" style="background:#ff9f43; color:white; padding:10px 14px; font-size:1.1rem;" onclick="sendtimer(document.getElementById('timer-input').value)">?? G?i</button>
+                <button class="btn" style="background:#ff9f43; color:white; padding:10px 14px; font-size:1.1rem;" onclick="sendtimer(document.getElementById('timer-input').value)">📤 Gửi</button>
             </div>            
          </div>
 
@@ -247,7 +248,7 @@
         <div class="status-info" style="flex-grow: 1; width: 100%;">
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid #f1f2f6; padding-bottom: 6px; margin-bottom: 6px;">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <span class="status-label" style="margin: 0;">H? th?ng Web</span>
+                    <span class="status-label" style="margin: 0;">Hệ thống Web</span>
                     <div class="status-dot" id="dot-io" style="margin: 0; width: 10px; height: 10px;"></div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 8px;">
@@ -256,82 +257,82 @@
                 </div>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <span class="status-value" id="web-status" style="font-size: 1rem; margin: 0;"> ang k?t n?i...</span>
+                <span class="status-value" id="web-status" style="font-size: 1rem; margin: 0;">Đang kết nối...</span>
                 <span class="status-value" style="font-size: 1rem; margin: 0;"><b id="s7-status" style="color: #e74c3c;">DisConnected</b></span>
             </div>
             
         </div>
     </div>
     <div class="status-card">
-        <div class="status-info"><span class="status-label">Tr?ng th i k?t n?i</span><span class="status-value" id="total-nodes">0 / 3 T? Online</span></div>
-        <div style="font-size: 1.3rem; line-height: 1;">??</div>
+        <div class="status-info"><span class="status-label">Trạng thái kết nối</span><span class="status-value" id="total-nodes">0 / 3 Tủ Online</span></div>
+        <div style="font-size: 1.3rem; line-height: 1;">📡</div>
     </div>
         <div class="status-card">
-            <div class="status-info"><span class="status-label">T n hi?u t?ng (TXD)</span><span class="status-value" id="gateway-rssitx">Ch a r?</span></div>
-            <div style="font-size: 1.3rem; line-height: 1;">??</div>
+            <div class="status-info"><span class="status-label">Tín hiệu tổng (TXD)</span><span class="status-value" id="gateway-rssitx">Chưa rõ</span></div>
+            <div style="font-size: 1.3rem; line-height: 1;">📶</div>
         </div>
     </div>
        <div id="rooms" class="rooms">
             <div class="room room-locked" id="node-Module_1">
                 <div class="room-title">
-                    <span class="status-label">??? T? 1</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_1')">?? Qu t</button><button class="btn save-btn" onclick="savenode('Module_1')">?? L u</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_1')">??? X a</button></div></div>
-                    <div class="device"><b>ESP32-SX1278</b><br>?? RSSI RXD: <span class="rssi-val">-127 dBm</span>
+                    <span class="status-label">🖥️ Tủ 1</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_1')">🔍 Quét</button><button class="btn save-btn" onclick="savenode('Module_1')">💾 Lưu</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_1')">🗑️ Xóa</button></div></div>
+                    <div class="device"><b>ESP32-SX1278</b><br>📶 RSSI RXD: <span class="rssi-val">-127 dBm</span>
                     <div class="sensor-grid"><div class="sensor">
-                    <div class="sensor-name">??? Nhi?t  ?</div>
-                    <div class="sensor-value temp-val">0.0 C</div></div><div class="sensor">
-                    <div class="sensor-name">??  ? ?m</div>
+                    <div class="sensor-name">🌡️ Nhiệt độ</div>
+                    <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
+                    <div class="sensor-name">💧 Độ ẩm</div>
                     <div class="sensor-value hum-val">0%</div></div><div class="sensor">
-                    <div class="sensor-name">?? Tr?ng th i</div>
+                    <div class="sensor-name">🔌 Trạng thái</div>
                     <div class="sensor-value status-val">OFF line</div>
                     </div><div class="sensor">
-                    <div class="sensor-name">?? CHIP ID</div>
-                    <div class="sensor-value chip-val">Ch a r?</div>
+                    <div class="sensor-name">🆔 CHIP ID</div>
+                    <div class="sensor-value chip-val">Chưa rõ</div>
                     </div></div></div></div>
                     <div class="room room-locked" id="node-Module_2">
                 <div class="room-title">
-                    <span class="status-label">??? T? 2</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_2')">?? Qu t</button><button class="btn save-btn" onclick="savenode('Module_2')">?? L u</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_2')">??? X a</button></div></div>
-                    <div class="device"><b>ESP32-SX1278</b><br>?? RSSI RXD: <span class="rssi-val">-127 dBm</span>
+                    <span class="status-label">🖥️ Tủ 2</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_2')">🔍 Quét</button><button class="btn save-btn" onclick="savenode('Module_2')">💾 Lưu</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_2')">🗑️ Xóa</button></div></div>
+                    <div class="device"><b>ESP32-SX1278</b><br>📶 RSSI RXD: <span class="rssi-val">-127 dBm</span>
                     <div class="sensor-grid"><div class="sensor">
-                    <div class="sensor-name">??? Nhi?t  ?</div>
-                    <div class="sensor-value temp-val">0.0 C</div></div><div class="sensor">
-                    <div class="sensor-name">??  ? ?m</div>
+                    <div class="sensor-name">🌡️ Nhiệt độ</div>
+                    <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
+                    <div class="sensor-name">💧 Độ ẩm</div>
                     <div class="sensor-value hum-val">0%</div></div><div class="sensor">
-                    <div class="sensor-name">?? Tr?ng th i</div>
+                    <div class="sensor-name">🔌 Trạng thái</div>
                     <div class="sensor-value status-val">OFF line</div>
                     </div><div class="sensor">
-                    <div class="sensor-name">?? CHIP ID</div>
-                    <div class="sensor-value chip-val">Ch a r?</div>
+                    <div class="sensor-name">🆔 CHIP ID</div>
+                    <div class="sensor-value chip-val">Chưa rõ</div>
                     </div></div></div></div>
                     <div class="room room-locked" id="node-Module_3">
                 <div class="room-title">
-                    <span class="status-label">??? T? 3</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_3')">?? Qu t</button><button class="btn save-btn" onclick="savenode('Module_3')">?? L u</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_3')">??? X a</button></div></div>
-                    <div class="device"><b>ESP32-SX1278</b><br>?? RSSI RXD: <span class="rssi-val">-127 dBm</span>
+                    <span class="status-label">🖥️ Tủ 3</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_3')">🔍 Quét</button><button class="btn save-btn" onclick="savenode('Module_3')">💾 Lưu</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_3')">🗑️ Xóa</button></div></div>
+                    <div class="device"><b>ESP32-SX1278</b><br>📶 RSSI RXD: <span class="rssi-val">-127 dBm</span>
                     <div class="sensor-grid"><div class="sensor">
-                    <div class="sensor-name">??? Nhi?t  ?</div>
-                    <div class="sensor-value temp-val">0.0 C</div></div><div class="sensor">
-                    <div class="sensor-name">??  ? ?m</div>
+                    <div class="sensor-name">🌡️ Nhiệt độ</div>
+                    <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
+                    <div class="sensor-name">💧 Độ ẩm</div>
                     <div class="sensor-value hum-val">0%</div></div><div class="sensor">
-                    <div class="sensor-name">?? Tr?ng th i</div>
+                    <div class="sensor-name">🔌 Trạng thái</div>
                     <div class="sensor-value status-val">OFF line</div>
                     </div><div class="sensor">
-                    <div class="sensor-name">?? CHIP ID</div>
-                    <div class="sensor-value chip-val">Ch a r?</div>
+                    <div class="sensor-name">🆔 CHIP ID</div>
+                    <div class="sensor-value chip-val">Chưa rõ</div>
                     </div></div></div></div>
                     </div><div class="serial-box">
                     <div class="serial-box">
                 <div class="serial-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap !important; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid #333; gap: 15px 50px;">
-                    <span class="serial-title" style="white-space: nowrap; font-weight: bold; color: #edf1f2; font-size: 1.15rem;">?? Serial Monitor</span>
+                    <span class="serial-title" style="white-space: nowrap; font-weight: bold; color: #edf1f2; font-size: 1.15rem;">📟 Serial Monitor</span>
                     <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1; min-width: 280px; margin: 0; order: 2;">
                         <input type="text" id="SendSerial" placeholder="Message (Enter to send)" style="flex-grow: 1; background: #2d2d2d; color: #00ff00; border: 1px solid #444; padding: 6px 12px; border-radius: 4px; font-family: monospace; outline: none; transition: none;" onkeydown="if(event.key==='Enter') sendSerialCmd(this.value)">
-                        <button class="clear-btn" style="border-color: #00ff00; color: #00ff00; white-space: nowrap;" onclick="sendSerialCmd(document.getElementById('SendSerial').value)">G?i</button>
+                        <button class="clear-btn" style="border-color: #00ff00; color: #00ff00; white-space: nowrap;" onclick="sendSerialCmd(document.getElementById('SendSerial').value)">Gửi</button>
                     </div>
                     <div style="flex-shrink: 0; order: 1;">
-                        <button class="clear-btn" style="white-space: nowrap;" onclick="clearSerialLog()">X a</button>
+                        <button class="clear-btn" style="white-space: nowrap;" onclick="clearSerialLog()">Xóa</button>
                     </div>
                 </div>
                 <div class="serial-terminal" id="serial-terminal"></div>
             </div>
-              <div id="toast">Th ng b o h? th?ng</div><script>
+              <div id="toast">Thông báo hệ thống</div><script>
                 var loc=window.location;
                    var prefix=loc.protocol === "https:"?"wss://":"ws://";
                    var gateway=prefix.concat(loc.host,"/ws");var websocket;
@@ -380,11 +381,11 @@
                 function initWebSocket(){
                     websocket=new WebSocket(gateway);
                     websocket.onopen=function(){
-                        document.getElementById('web-status').textContent=" ? k?t n?i";
+                        document.getElementById('web-status').textContent="Đã kết nối";
                         document.getElementById('dot-io').style.background="#2ecc71";
                     };
                     websocket.onclose=function(){
-                        document.getElementById('web-status').textContent="M?t k?t n?i";
+                        document.getElementById('web-status').textContent="Mất kết nối";
                         document.getElementById('dot-io').style.background="#e74c3c";setTimeout(initWebSocket,2000);
                     };
                     websocket.onmessage=runmsg;
@@ -394,13 +395,13 @@
                     updateModeColor(document.getElementById('mode-select').value);
                 });
                 function showToast(msg){var el=document.getElementById("toast");
-                el.textContent="?? " + msg;    el.className="show";
+                el.textContent="🔔 " + msg;    el.className="show";
         setTimeout(function(){el.className=el.className.replace("show","");},5000);}
      
        function runmsg(evt){
        try{var data=JSON.parse(evt.data);
        if(data.status==="success"&&data.msg){
-       var vnmMsg=data.msg.replace('thiet bi','T?').replace('Node','T?').replace('thanh cong','th nh c ng');
+       var vnmMsg=data.msg.replace('thiet bi','Tủ').replace('Node','Tủ').replace('thanh cong','thành công');
        showToast(vnmMsg);return;}
             if (data.mode_now !== undefined && data.mode_now !== null) {
                 document.getElementById('mode-select').value = data.mode_now;
@@ -434,7 +435,7 @@
             if(data.mac_list!==undefined&&Array.isArray(data.mac_list)){
                 var dropdown=document.getElementById('mac-list-dropdown');
                 var currentValue=dropdown.value;
-                dropdown.innerHTML='<option value="">-- DANH S CH MAC --</option>';
+                dropdown.innerHTML='<option value="">-- DANH SÁCH MAC --</option>';
                 data.mac_list.forEach(function(macStr){
                 var opt=document.createElement('option');
                     opt.value=macStr;
@@ -446,7 +447,7 @@
                         dropdown.value = data.mac_default; 
                     }
                 var listData=Array.isArray(data)?data:(data.list||null);
-                var hOnline=data.online_count !== undefined?data.online_count:(data["Thi?t b?"]!==undefined?data["Thi?t b?"]:null);
+                var hOnline=data.online_count !== undefined?data.online_count:(data["Thiết bị"]!==undefined?data["Thiết bị"]:null);
                 var hRssiTx=data.rssitx !== undefined?data.rssitx:(data.rssitx1 !== undefined?data.rssitx1:null);
                 if(listData&&Array.isArray(listData)){if(hRssiTx!==null){document.getElementById('gateway-rssitx').textContent=hRssiTx+" dBm";
                 }
@@ -458,7 +459,7 @@
                 var roomEl=document.getElementById('node-'+targetId);
                 if(roomEl){
                 var tempVal=node.temp!==undefined?node.temp:(node.temp1!==undefined?node.temp1:(node.temp2!==undefined?node.temp2:node.temp3));
-                if(tempVal!==undefined)roomEl.querySelector('.temp-val').textContent=parseFloat(tempVal).toFixed(1)+' C';
+                if(tempVal!==undefined)roomEl.querySelector('.temp-val').textContent=parseFloat(tempVal).toFixed(1)+'°C';
                     var humVal=node.hum!==undefined?node.hum:(node.hum1!==undefined?node.hum1:(node.hum2!==undefined?node.hum2:node.hum3));
                 if(humVal!==undefined)roomEl.querySelector('.hum-val').textContent=parseFloat(humVal).toFixed(1)+'%';
                     var chipIdVal=node["chip id "]||node["chip_id"]||node["chip id 1"]||node["chip id 2"]||node["chip id 3"];
@@ -467,7 +468,7 @@
                             var txtCheck = String(chipIdVal).trim();
                             var btnScan = roomEl.querySelector('.scan-btn'); 
                             if (btnScan) {
-                                 if (txtCheck !== "" && txtCheck !== "Ch a r?") {
+                                 if (txtCheck !== "" && txtCheck !== "Chưa rõ") {
                                     btnScan.classList.add('btn-disabled'); 
                                 } else {
                                     btnScan.classList.remove('btn-disabled'); 
@@ -488,7 +489,7 @@
                 }
             }
 
-        var loraVal=node.lora!==undefined?node.lora:(node.lora1!==undefined?node.lora1:(node.lora2!==undefined?node.lora2:(node["Tr?ng th i"]!==undefined?node["Tr?ng th i"]:node.relay)));
+        var loraVal=node.lora!==undefined?node.lora:(node.lora1!==undefined?node.lora1:(node.lora2!==undefined?node.lora2:(node["Trạng thái"]!==undefined?node["Trạng thái"]:node.relay)));
             if(loraVal!==undefined){var statusEl=roomEl.querySelector('.status-val');
             statusEl.textContent=loraVal;var checkVal=String(loraVal).toUpperCase().trim();
             if(checkVal.includes("ON")||checkVal==="TRUE"||checkVal==="1"){
@@ -496,7 +497,7 @@
             }
              else 
                  if(checkVal.includes("OFF")||checkVal==="FALSE"||checkVal==="0"){statusEl.style.color="#e74c3c";}else{statusEl.style.color="#2f3542";}}}});
-                    if(hOnline!==null){document.getElementById('total-nodes').textContent=hOnline+" / "+listData.length+" T? Online";
+                    if(hOnline!==null){document.getElementById('total-nodes').textContent=hOnline+" / "+listData.length+" Tủ Online";
                       if (hOnline !== null && hOnline !== undefined) {
                             var count = parseInt(hOnline);
                             var tu1 = document.getElementById('node-Module_1');
@@ -541,9 +542,9 @@
                         websocket.send(JSON.stringify({action: "delete", node: id}));
                         var roomEl = document.getElementById('node-' + id);
                         if (roomEl) {
-                            roomEl.querySelector('.temp-val').textContent = '0.0 C';
+                            roomEl.querySelector('.temp-val').textContent = '0.0°C';
                             roomEl.querySelector('.hum-val').textContent = '0.0%';
-                            roomEl.querySelector('.chip-val').textContent = 'Ch a r?';
+                            roomEl.querySelector('.chip-val').textContent = 'Chưa rõ';
                             roomEl.querySelector('.rssi-val').textContent = '-127 dBm';
                             var btnScan = roomEl.querySelector('.scan-btn');
                             if (btnScan) {btnScan.classList.remove('btn-disabled');}
