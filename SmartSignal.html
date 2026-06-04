@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+    <html lang="vi">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Smart Signal</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://gstatic.com" crossorigin>
+        <style>
+            body { 
+                font-family: 'Inter', 'Segoe UI', sans-serif; 
+                background: #f4f6f9; 
+                padding: 20px; 
+                margin: 0; 
+                box-sizing: border-box; 
+            }
+            *, *:before, *:after { box-sizing: inherit; }
+            .time-box { 
+                background: #2c3e50; 
+                color: white; 
+                padding: 12px 20px; 
+                border-radius: 10px; 
+                max-width: 1200px; 
+                margin: 0 auto 15px auto; 
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                
+                display: flex; 
+                flex-direction: row;   
+                justify-content: space-between;
+                align-items: center;     
+                gap: 15px;
+                flex-wrap: wrap !important; 
+            }
+
+            .mac-select { 
+                background: #34495e; 
+                color: #08fc6f; 
+                border: 1px solid #455a64; 
+                padding: 6px 12px;     
+                border-radius: 6px; 
+                font-weight: bold; 
+                font-size: 1.3rem;     
+                outline: none; 
+                max-width: 320px;        
+                cursor: pointer;
+                align-items: center;   
+                text-align: center;   
+            }
+            .time-select { 
+                background: #34495e; 
+                color: #05f2ea; 
+                border: 1px solid #455a64; 
+                padding: 6px 12px;     
+                border-radius: 6px; 
+                font-weight: bold; 
+                font-size: 1.25rem;     
+                cursor: pointer; 
+                outline: none; 
+                align-items: center;   
+                text-align: left;     
+            }
+            .time-value { 
+                font-family: 'Courier New', Courier, monospace; 
+                font-size: 1.38rem;      
+                font-weight: 1000; 
+                color: white; 
+                white-space: nowrap; 
+            }
+            .time-title { 
+                font-weight: bold; 
+                font-size: 1.3rem;     
+                letter-spacing: 0.5px; 
+                white-space: nowrap; 
+            }     
+            .clock-box {
+                background: #34495e;    
+                border: 1px solid #455a64;
+                padding: 6px 12px;       
+                border-radius: 6px;     
+                box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .time-left { 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                gap: 15px; 
+               flex-wrap: wrap; 
+            }
+            .status-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto 25px auto; width: 100%; }
+            .status-card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; overflow: hidden; }
+            .status-info { display: flex; flex-direction: column; min-width: 0; }
+            .status-label { font-size: 1.0rem; color: #e01f1f; font-weight: bold; text-transform: uppercase; }
+            .status-value { font-size: 1.0rem; font-weight: bold; color: #2f3542; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .status-dot { width: 12px; height: 12px; border-radius: 50%; background: #e74c3c; flex-shrink: 0; margin-left: 10px; }
+            .rooms { 
+                display: grid; 
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+                gap: 20px; 
+                max-width: 1200px; 
+                margin: 0 auto 25px auto; 
+                width: 100%; 
+                box-sizing: border-box;
+            }
+            .room { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; }
+            .room:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
+            .room-title { font-size: 1.15rem; font-weight: bold; border-bottom: 2px solid #f1f2f6; padding-bottom: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; color: #2c3e50; }
+            .room-actions { display: flex; gap: 6px; flex-shrink: 0; }
+            .room-locked {
+                opacity: 0.4 !important;       
+                pointer-events: none !important; 
+                user-select: none !important;  
+                filter: grayscale(80%);         
+                transition: all 0.3s ease;     
+            }
+            .device { 
+                color: #053df7; 
+                font-size: 1.3rem; 
+                line-height: 1.5; 
+            }
+            .sensor-grid { 
+                display: grid; 
+                grid-template-columns: 1fr 1fr; 
+                gap: 10px; margin-top: 15px; 
+                width: 100%; 
+            }
+            .rssi-val {
+                color: #3498db;     
+                font-weight: bold; 
+            }
+            .sensor {
+                    background: #f8f9fa; 
+                    padding: 10px; 
+                    border-radius: 8px; 
+                    border-left: 4px solid #3498db;
+                    min-width: 0; display: flex;
+                    flex-direction: column;
+                    align-items: center;  
+                    text-align: center;  
+                    }
+            .sensor-name { 
+                    font-size: 0.95rem; color: #e01f1f; 
+                    font-weight: bold; text-transform: uppercase; 
+                    letter-spacing: 0.5px; 
+                }
+            .sensor-value { 
+                    font-size: 1.15rem; 
+                    font-weight: bold; 
+                    margin-top: 5px; 
+                    color: #fca903; 
+                    white-space: nowrap; 
+                    overflow: hidden; 
+                    text-overflow: ellipsis;
+                }
+            .btn { padding: 5px 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 1.0rem; font-weight: bold; transition: background 0.2s, transform 0.1s; white-space: nowrap; }
+            .scan-btn { background: #3498db; color: white; }
+            .btn-disabled {
+                opacity: 0.3 !important;       
+                pointer-events: none !important; 
+                cursor: not-allowed !important; 
+            }
+            .save-btn { background: #2ecc71; color: white; }
+            #toast { visibility: hidden; min-width: 280px; background-color: #2c3e50; color: #fff; text-align: center; border-radius: 8px; padding: 14px; position: fixed; z-index: 999; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-left: 5px solid #2ecc71; }
+            #toast.show { 
+                visibility: visible; 
+                animation: fadein 0.5s, fadeout 0.5s 5.5s; 
+            }
+            @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
+            @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
+            .serial-box { 
+                background: #1e1e1e; 
+                border-radius: 12px; 
+                padding: 15px; 
+                max-width: 1200px; 
+                margin: 0 auto; 
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+                border: 1px solid #333; 
+                min-height: 180px; 
+            }
+            .serial-header { 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center; 
+                border-bottom: 1px solid #333; 
+                padding-bottom: 8px; 
+                margin-bottom: 10px; 
+            }
+            .serial-title { 
+                color: #ffffff; 
+                font-weight: bold; 
+                font-size: 1.45rem; 
+                letter-spacing: 0.5px;
+            }
+            .clear-btn { 
+                background: #333; 
+                color: #aaa; 
+                padding: 4px 12px; 
+                font-size: 1.1rem; 
+                border: 1px solid #444; 
+                border-radius: 4px; 
+                cursor: pointer; 
+                font-weight: bold; 
+            }
+            .clear-btn:hover { 
+                background: #fc1a03; 
+                color: white; 
+                border-color: #e74c3c; 
+            }
+            .serial-terminal { 
+                height: 190px; 
+                overflow-y: auto; 
+                font-family: 'Inter', -apple-system, sans-serif; 
+                font-size: 1.0rem; 
+                color: #00ff00; 
+                line-height: 1.4; 
+                padding: 5px; 
+                white-space: pre-wrap; 
+                word-break: break-all; 
+            }
+            .log-time { 
+                color: #f70202; 
+                margin-right: 8px; 
+                font-weight: bold; 
+            }
+        </style>
+    </head>
+    <body>
+       <div class="time-box">
+            <div class="clock-box">
+                <span class="time-value" id="live-clock">00:00:00 - 01/01/2026</span>
+                </div class="time-left"> <select class="time-select" id="mode-select" onchange="sendmode(this.value)">
+                <option value="mode_auto">Ch?  ?: T?  ?ng</option>
+                <option value="mode_manual">Ch?  ?: Th? C ng</option>
+                <option value="mode_test">Ch?  ?: Ch?p  V ng</option>
+                </select><select class="mac-select" id="mac-list-dropdown" onchange="if(this.value) websocket.send(JSON.stringify({action:'select_mac', value:this.value}));">
+                <option value="">-- DANH S CH MAC --</option></select>
+                <input type="time" step="1" class="time-select" id="timer-input" style="color:#ff9f43; font-family:monospace; font-size:1.2rem; padding:8px 10px;">
+                <button class="btn" style="background:#ff9f43; color:white; padding:10px 14px; font-size:1.1rem;" onclick="sendtimer(document.getElementById('timer-input').value)">?? G?i</button>
+            </div>            
+         </div>
+
+<div class="status-bar" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto 25px auto; width: 100%;">
+    
+    <div class="status-card" style="display: flex; align-items: center; width: 100%;">
+        <div class="status-info" style="flex-grow: 1; width: 100%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid #f1f2f6; padding-bottom: 6px; margin-bottom: 6px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="status-label" style="margin: 0;">H? th?ng Web</span>
+                    <div class="status-dot" id="dot-io" style="margin: 0; width: 10px; height: 10px;"></div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="status-label" style="margin: 0; font-size: 1.15rem; text-transform: uppercase;">PLC S7-1200</span>
+                    <div class="status-dot" id="dot-s7" style="background: #e74c3c; margin: 0; width: 10px; height: 10px;"></div>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <span class="status-value" id="web-status" style="font-size: 1rem; margin: 0;"> ang k?t n?i...</span>
+                <span class="status-value" style="font-size: 1rem; margin: 0;"><b id="s7-status" style="color: #e74c3c;">DisConnected</b></span>
+            </div>
+            
+        </div>
+    </div>
+    <div class="status-card">
+        <div class="status-info"><span class="status-label">Tr?ng th i k?t n?i</span><span class="status-value" id="total-nodes">0 / 3 T? Online</span></div>
+        <div style="font-size: 1.3rem; line-height: 1;">??</div>
+    </div>
+        <div class="status-card">
+            <div class="status-info"><span class="status-label">T n hi?u t?ng (TXD)</span><span class="status-value" id="gateway-rssitx">Ch a r?</span></div>
+            <div style="font-size: 1.3rem; line-height: 1;">??</div>
+        </div>
+    </div>
+       <div id="rooms" class="rooms">
+            <div class="room room-locked" id="node-Module_1">
+                <div class="room-title">
+                    <span class="status-label">??? T? 1</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_1')">?? Qu t</button><button class="btn save-btn" onclick="savenode('Module_1')">?? L u</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_1')">??? X a</button></div></div>
+                    <div class="device"><b>ESP32-SX1278</b><br>?? RSSI RXD: <span class="rssi-val">-127 dBm</span>
+                    <div class="sensor-grid"><div class="sensor">
+                    <div class="sensor-name">??? Nhi?t  ?</div>
+                    <div class="sensor-value temp-val">0.0 C</div></div><div class="sensor">
+                    <div class="sensor-name">??  ? ?m</div>
+                    <div class="sensor-value hum-val">0%</div></div><div class="sensor">
+                    <div class="sensor-name">?? Tr?ng th i</div>
+                    <div class="sensor-value status-val">OFF line</div>
+                    </div><div class="sensor">
+                    <div class="sensor-name">?? CHIP ID</div>
+                    <div class="sensor-value chip-val">Ch a r?</div>
+                    </div></div></div></div>
+                    <div class="room room-locked" id="node-Module_2">
+                <div class="room-title">
+                    <span class="status-label">??? T? 2</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_2')">?? Qu t</button><button class="btn save-btn" onclick="savenode('Module_2')">?? L u</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_2')">??? X a</button></div></div>
+                    <div class="device"><b>ESP32-SX1278</b><br>?? RSSI RXD: <span class="rssi-val">-127 dBm</span>
+                    <div class="sensor-grid"><div class="sensor">
+                    <div class="sensor-name">??? Nhi?t  ?</div>
+                    <div class="sensor-value temp-val">0.0 C</div></div><div class="sensor">
+                    <div class="sensor-name">??  ? ?m</div>
+                    <div class="sensor-value hum-val">0%</div></div><div class="sensor">
+                    <div class="sensor-name">?? Tr?ng th i</div>
+                    <div class="sensor-value status-val">OFF line</div>
+                    </div><div class="sensor">
+                    <div class="sensor-name">?? CHIP ID</div>
+                    <div class="sensor-value chip-val">Ch a r?</div>
+                    </div></div></div></div>
+                    <div class="room room-locked" id="node-Module_3">
+                <div class="room-title">
+                    <span class="status-label">??? T? 3</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_3')">?? Qu t</button><button class="btn save-btn" onclick="savenode('Module_3')">?? L u</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_3')">??? X a</button></div></div>
+                    <div class="device"><b>ESP32-SX1278</b><br>?? RSSI RXD: <span class="rssi-val">-127 dBm</span>
+                    <div class="sensor-grid"><div class="sensor">
+                    <div class="sensor-name">??? Nhi?t  ?</div>
+                    <div class="sensor-value temp-val">0.0 C</div></div><div class="sensor">
+                    <div class="sensor-name">??  ? ?m</div>
+                    <div class="sensor-value hum-val">0%</div></div><div class="sensor">
+                    <div class="sensor-name">?? Tr?ng th i</div>
+                    <div class="sensor-value status-val">OFF line</div>
+                    </div><div class="sensor">
+                    <div class="sensor-name">?? CHIP ID</div>
+                    <div class="sensor-value chip-val">Ch a r?</div>
+                    </div></div></div></div>
+                    </div><div class="serial-box">
+                    <div class="serial-box">
+                <div class="serial-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap !important; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid #333; gap: 15px 50px;">
+                    <span class="serial-title" style="white-space: nowrap; font-weight: bold; color: #edf1f2; font-size: 1.15rem;">?? Serial Monitor</span>
+                    <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1; min-width: 280px; margin: 0; order: 2;">
+                        <input type="text" id="SendSerial" placeholder="Message (Enter to send)" style="flex-grow: 1; background: #2d2d2d; color: #00ff00; border: 1px solid #444; padding: 6px 12px; border-radius: 4px; font-family: monospace; outline: none; transition: none;" onkeydown="if(event.key==='Enter') sendSerialCmd(this.value)">
+                        <button class="clear-btn" style="border-color: #00ff00; color: #00ff00; white-space: nowrap;" onclick="sendSerialCmd(document.getElementById('SendSerial').value)">G?i</button>
+                    </div>
+                    <div style="flex-shrink: 0; order: 1;">
+                        <button class="clear-btn" style="white-space: nowrap;" onclick="clearSerialLog()">X a</button>
+                    </div>
+                </div>
+                <div class="serial-terminal" id="serial-terminal"></div>
+            </div>
+              <div id="toast">Th ng b o h? th?ng</div><script>
+                var loc=window.location;
+                   var prefix=loc.protocol === "https:"?"wss://":"ws://";
+                   var gateway=prefix.concat(loc.host,"/ws");var websocket;
+
+                    function logToTerminal(rawText) {
+                    var term = document.getElementById('serial-terminal');
+                    var now = new Date();
+                    var timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + ":" + String(now.getSeconds()).padStart(2, '0');
+                    var newLog = document.createElement('div');
+                    newLog.innerHTML = '<span class="log-time">[' + timeStr + ']</span>' + rawText;
+                    term.appendChild(newLog);
+                    term.scrollTop = term.scrollHeight;
+                    if (term.children.length > 50) { term.removeChild(term.firstChild); 
+                }
+            }
+
+                function clearSerialLog(){document.getElementById('serial-terminal').innerHTML='';}
+                function sendmode(val){
+                    if(websocket&&websocket.readyState===1){
+                        websocket.send(JSON.stringify({action:"select_mode",value:val}));
+                    }updateModeColor(val);
+                }
+                function updateModeColor(val) {
+                    var modeEl = document.getElementById('mode-select');
+                    if (!modeEl) return;                    
+                    if (val === "mode_auto") {
+                        modeEl.style.color = "#00ff00";     
+                    } else if (val === "mode_manual") {
+                        modeEl.style.color = "#ff0000";     
+                    } else if (val === "mode_test") {
+                        modeEl.style.color = "#ffff00";     
+                    }
+                }
+
+                function sendtimer(val) {
+                    if (!val || !websocket || websocket.readyState !== 1) return;
+                    websocket.send(JSON.stringify({action: "set_timer", value: val}));
+                }
+                function sendSerialCmd(val) {
+                    if (!val || !websocket || websocket.readyState !== 1) return;
+                    websocket.send(JSON.stringify({action: "serial_cmd", value: val}));
+                    logToTerminal("<span style='color:#ff0505;'>Send-> " + val + "</span>");
+                    document.getElementById('SendSerial').value = ''; 
+                }
+
+                function initWebSocket(){
+                    websocket=new WebSocket(gateway);
+                    websocket.onopen=function(){
+                        document.getElementById('web-status').textContent=" ? k?t n?i";
+                        document.getElementById('dot-io').style.background="#2ecc71";
+                    };
+                    websocket.onclose=function(){
+                        document.getElementById('web-status').textContent="M?t k?t n?i";
+                        document.getElementById('dot-io').style.background="#e74c3c";setTimeout(initWebSocket,2000);
+                    };
+                    websocket.onmessage=runmsg;
+                }
+                document.addEventListener("DOMContentLoaded", function() { 
+                    initWebSocket(); 
+                    updateModeColor(document.getElementById('mode-select').value);
+                });
+                function showToast(msg){var el=document.getElementById("toast");
+                el.textContent="?? " + msg;    el.className="show";
+        setTimeout(function(){el.className=el.className.replace("show","");},5000);}
+     
+       function runmsg(evt){
+       try{var data=JSON.parse(evt.data);
+       if(data.status==="success"&&data.msg){
+       var vnmMsg=data.msg.replace('thiet bi','T?').replace('Node','T?').replace('thanh cong','th nh c ng');
+       showToast(vnmMsg);return;}
+            if (data.mode_now !== undefined && data.mode_now !== null) {
+                document.getElementById('mode-select').value = data.mode_now;
+                updateModeColor(data.mode_now);
+            }
+            if (data.clock_now !== undefined && data.clock_now !== null) {
+                    document.getElementById('live-clock').textContent = data.clock_now.replace(' ', ' - ');
+                }
+            if (data.timer_now !== undefined && data.timer_now !== null) {
+                document.getElementById('timer-input').value = data.timer_now;
+            }
+            if(data.serial!==undefined&&data.serial!==null){
+                logToTerminal("-> "+data.serial);
+            }
+            if (data.s7_connected !== undefined && data.s7_connected !== null) {
+                var s7Txt = document.getElementById('s7-status');
+                var s7Dot = document.getElementById('dot-s7');
+                var checkS7 = String(data.s7_connected).toUpperCase().trim();
+                
+                if (checkS7 === "ON" || checkS7 === "TRUE" || checkS7 === "1") {
+                    s7Txt.textContent = "Connected";
+                    s7Txt.style.color = "#2ecc71";     
+                    s7Dot.style.background = "#2ecc71";
+                } else {
+                    s7Txt.textContent = "DisConnected";
+                    s7Txt.style.color = "#e74c3c";     
+                    s7Dot.style.background = "#e74c3c"; 
+                }
+            }
+        
+            if(data.mac_list!==undefined&&Array.isArray(data.mac_list)){
+                var dropdown=document.getElementById('mac-list-dropdown');
+                var currentValue=dropdown.value;
+                dropdown.innerHTML='<option value="">-- DANH S CH MAC --</option>';
+                data.mac_list.forEach(function(macStr){
+                var opt=document.createElement('option');
+                    opt.value=macStr;
+                    opt.textContent = "Mac: " + macStr; 
+                    dropdown.appendChild(opt);});
+                    dropdown.value=currentValue;
+                }
+                if (data.mac_default !== undefined) {
+                        dropdown.value = data.mac_default; 
+                    }
+                var listData=Array.isArray(data)?data:(data.list||null);
+                var hOnline=data.online_count !== undefined?data.online_count:(data["Thi?t b?"]!==undefined?data["Thi?t b?"]:null);
+                var hRssiTx=data.rssitx !== undefined?data.rssitx:(data.rssitx1 !== undefined?data.rssitx1:null);
+                if(listData&&Array.isArray(listData)){if(hRssiTx!==null){document.getElementById('gateway-rssitx').textContent=hRssiTx+" dBm";
+                }
+                listData.forEach(function(node,index){var targetId=node.id||node.id1||node.id2||node.id3;if(!targetId||targetId.length<3){
+                if(index===0)targetId="Module_1";
+                if(index===1)targetId="Module_2";
+                if(index===2)targetId="Module_3";
+                }
+                var roomEl=document.getElementById('node-'+targetId);
+                if(roomEl){
+                var tempVal=node.temp!==undefined?node.temp:(node.temp1!==undefined?node.temp1:(node.temp2!==undefined?node.temp2:node.temp3));
+                if(tempVal!==undefined)roomEl.querySelector('.temp-val').textContent=parseFloat(tempVal).toFixed(1)+' C';
+                    var humVal=node.hum!==undefined?node.hum:(node.hum1!==undefined?node.hum1:(node.hum2!==undefined?node.hum2:node.hum3));
+                if(humVal!==undefined)roomEl.querySelector('.hum-val').textContent=parseFloat(humVal).toFixed(1)+'%';
+                    var chipIdVal=node["chip id "]||node["chip_id"]||node["chip id 1"]||node["chip id 2"]||node["chip id 3"];
+                    if(chipIdVal !== undefined) roomEl.querySelector('.chip-val').textContent = chipIdVal;
+                        if (chipIdVal !== undefined && chipIdVal !== null) {
+                            var txtCheck = String(chipIdVal).trim();
+                            var btnScan = roomEl.querySelector('.scan-btn'); 
+                            if (btnScan) {
+                                 if (txtCheck !== "" && txtCheck !== "Ch a r?") {
+                                    btnScan.classList.add('btn-disabled'); 
+                                } else {
+                                    btnScan.classList.remove('btn-disabled'); 
+                                }
+                            }
+                        }
+
+                if (node.rssi !== undefined) {
+                var rssiEl = roomEl.querySelector('.rssi-val');
+                var rssiStr = String(node.rssi);
+                rssiEl.textContent = rssiStr;
+                var rssiNum = parseInt(rssiStr);
+                if (!isNaN(rssiNum)) {
+                    if (rssiNum >= -80) {rssiEl.style.color = "#2ecc71"; 
+                    } else if (rssiNum < -80 && rssiNum >= -99) { rssiEl.style.color = "#e67e22"; 
+                    } else { rssiEl.style.color = "#e74c3c";
+                    }
+                }
+            }
+
+        var loraVal=node.lora!==undefined?node.lora:(node.lora1!==undefined?node.lora1:(node.lora2!==undefined?node.lora2:(node["Tr?ng th i"]!==undefined?node["Tr?ng th i"]:node.relay)));
+            if(loraVal!==undefined){var statusEl=roomEl.querySelector('.status-val');
+            statusEl.textContent=loraVal;var checkVal=String(loraVal).toUpperCase().trim();
+            if(checkVal.includes("ON")||checkVal==="TRUE"||checkVal==="1"){
+                statusEl.style.color="#2ecc71";
+            }
+             else 
+                 if(checkVal.includes("OFF")||checkVal==="FALSE"||checkVal==="0"){statusEl.style.color="#e74c3c";}else{statusEl.style.color="#2f3542";}}}});
+                    if(hOnline!==null){document.getElementById('total-nodes').textContent=hOnline+" / "+listData.length+" T? Online";
+                      if (hOnline !== null && hOnline !== undefined) {
+                            var count = parseInt(hOnline);
+                            var tu1 = document.getElementById('node-Module_1');
+                            var tu2 = document.getElementById('node-Module_2');
+                            var tu3 = document.getElementById('node-Module_3');
+                            
+                            if (tu1 && tu2 && tu3) {
+                                if (count === 0) {
+                                    tu1.classList.add('room-locked'); 
+                                    tu2.classList.add('room-locked'); 
+                                    tu3.classList.add('room-locked');
+                                } else if (count === 1) {
+                                    tu1.classList.remove('room-locked');
+                                    tu2.classList.add('room-locked'); 
+                                    tu3.classList.add('room-locked');
+                                } else if (count === 2) {
+                                    tu1.classList.remove('room-locked'); 
+                                    tu2.classList.remove('room-locked'); 
+                                    tu3.classList.add('room-locked');
+                                } else if (count >= 3) {
+                                    tu1.classList.remove('room-locked'); 
+                                    tu2.classList.remove('room-locked'); 
+                                    tu3.classList.remove('room-locked');
+                                }
+                            }
+                        }        
+                    }
+                }
+            }
+            
+            catch(e){console.error("Loi:",e);}}
+            function scannode(id){
+            if(websocket&&websocket.readyState===1){
+                websocket.send(JSON.stringify({action:"scan",node:id}));}}
+                function savenode(id){
+                    if(websocket&&websocket.readyState===1){
+                        websocket.send(JSON.stringify({action:"save",node:id}));
+                        }
+                    }
+                function deletenode(id) {
+                    if (websocket && websocket.readyState === 1) {
+                        websocket.send(JSON.stringify({action: "delete", node: id}));
+                        var roomEl = document.getElementById('node-' + id);
+                        if (roomEl) {
+                            roomEl.querySelector('.temp-val').textContent = '0.0 C';
+                            roomEl.querySelector('.hum-val').textContent = '0.0%';
+                            roomEl.querySelector('.chip-val').textContent = 'Ch a r?';
+                            roomEl.querySelector('.rssi-val').textContent = '-127 dBm';
+                            var btnScan = roomEl.querySelector('.scan-btn');
+                            if (btnScan) {btnScan.classList.remove('btn-disabled');}
+                            var statusEl = roomEl.querySelector('.status-val');
+                            statusEl.textContent = 'OFF line';
+                            statusEl.style.color = '#e74c3c';
+                        }
+                    }
+                }
+            </script>
+        </body>
+    </html>
