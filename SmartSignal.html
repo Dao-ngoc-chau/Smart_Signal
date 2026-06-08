@@ -1,6 +1,9 @@
+#ifndef INDEX_H
+#define INDEX_H
+const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
     <html lang="vi">
-    <head>
+        <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Smart Signal</title>
@@ -14,6 +17,67 @@
                 margin: 0; 
                 box-sizing: border-box; 
             }
+            @keyframes locXoayToanTrang {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+            html {
+                background: #0f172a; 
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                overflow: auto;
+            }
+             body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                margin: 0;
+                padding: clamp(5px, 1.0vw, 10px) clamp(10px, 2vw, 15px) !important; 
+                
+                background: #eef2f5;
+                position: relative;
+                min-height: 100vh;
+                box-sizing: border-box;
+                overflow-x: hidden;
+                z-index: 1;
+            }
+            body::before {
+                content: "";
+                position: fixed; 
+                width: 300vw;    
+                height: 300vh;  
+                top: -100vh;
+                left: -100vw;
+                
+                background: conic-gradient(
+                    rgba(255, 0, 0, 0.9),       
+                    rgba(255, 100, 0, 0.85),    
+                    rgba(255, 230, 0, 0.9),     
+                    rgba(0, 255, 50, 0.85),     
+                    rgba(0, 255, 255, 0.9),    
+                    rgba(0, 100, 255, 0.85),    
+                    rgba(150, 0, 255, 0.9),      
+                    rgba(255, 0, 150, 0.85),    
+                    rgba(255, 0, 0, 0.9)        
+                );
+                
+                filter: blur(80px); 
+                animation: locXoayToanTrang 10s linear infinite; 
+                z-index: -2;
+            }
+            body::after {
+                content: "";
+                position: absolute;
+                top: 1px;    
+                left: 1px;
+                right: 1px;
+                bottom: 1px;
+                
+                background: rgba(17, 24, 39, 0.15) !important; 
+                
+                border-radius: 5px;
+                z-index: -1;
+            }
+
             *, *:before, *:after { box-sizing: inherit; }
             .time-box { 
                 background: #2c3e50; 
@@ -28,18 +92,18 @@
                 flex-direction: row;   
                 justify-content: space-between;
                 align-items: center;     
-                gap: 15px;
-                flex-wrap: wrap !important; 
+                flex-wrap: wrap !important;
+                gap: 12px 20px;
             }
 
             .mac-select { 
                 background: #34495e; 
                 color: #08fc6f; 
                 border: 1px solid #455a64; 
-                padding: 6px 12px;     
                 border-radius: 6px; 
                 font-weight: bold; 
-                font-size: 1.3rem;     
+                font-size: clamp(1.0rem, 2.2vw, 1.15rem) !important;
+                padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px) !important; 
                 outline: none; 
                 max-width: 320px;        
                 cursor: pointer;
@@ -47,13 +111,13 @@
                 text-align: center;   
             }
             .time-select { 
+                font-size: clamp(1.0rem, 1.8vw, 1.15rem) !important;
+                padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px) !important; 
                 background: #34495e; 
                 color: #05f2ea; 
-                border: 1px solid #455a64; 
-                padding: 6px 12px;     
+                border: 1px solid #455a64;   
                 border-radius: 6px; 
-                font-weight: bold; 
-                font-size: 1.25rem;     
+                font-weight: bold;  
                 cursor: pointer; 
                 outline: none; 
                 align-items: center;   
@@ -82,19 +146,52 @@
                 align-items: center;
                 justify-content: center;
             }
-            .time-left { 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                gap: 15px; 
-               flex-wrap: wrap; 
+            .time-left {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: wrap !important; 
             }
             .status-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto 25px auto; width: 100%; }
             .status-card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; overflow: hidden; }
             .status-info { display: flex; flex-direction: column; min-width: 0; }
-            .status-label { font-size: 1.0rem; color: #e01f1f; font-weight: bold; text-transform: uppercase; }
+            .status-label { 
+                color: #e01f1f; 
+                font-family: monospace;
+                font-weight: bold; 
+                text-transform: uppercase; 
+                font-size: clamp(0.95rem, 1.8vw, 1.0rem) !important;
+                padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px) !important; 
+            }
             .status-value { font-size: 1.0rem; font-weight: bold; color: #2f3542; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             .status-dot { width: 12px; height: 12px; border-radius: 50%; background: #e74c3c; flex-shrink: 0; margin-left: 10px; }
+            #live-clock {
+                font-size: clamp(0.95rem, 2.5vw, 1.15rem) !important;
+                font-weight: bold;
+            }
+             #SendSerial {
+                flex-grow: 1;
+                background: #2d2d2d;
+                color: #00ff00;
+                border: 1px solid #444;
+                border-radius: 4px;
+                font-family: monospace;
+                outline: none;
+                transition: none;
+                font-size: clamp(0.55rem, 1.8vw, 1.05rem) !important;
+                padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px) !important; 
+            }
+            #SendSerial::placeholder {
+                font-size: 0.95rem !important; 
+                color: #888888; 
+                font-family: monospace; 
+                font-weight: normal;
+            }
+            #SendSerial::-webkit-input-placeholder {
+                font-size: 0.95rem !important;
+                color: #888888;
+            }
+
             .rooms { 
                 display: grid; 
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
@@ -106,7 +203,18 @@
             }
             .room { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; }
             .room:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
-            .room-title { font-size: 1.15rem; font-weight: bold; border-bottom: 2px solid #f1f2f6; padding-bottom: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; color: #2c3e50; }
+            .room-title { 
+                font-family: monospace;
+                font-size: clamp(1.05rem, 2vw, 1.15rem) !important;
+                font-weight: bold; 
+                border-bottom: 2px solid #f1f2f6; 
+                padding-bottom: 12px; 
+                margin-bottom: 15px; 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center; 
+                color: #2c3e50; 
+            }
             .room-actions { display: flex; gap: 6px; flex-shrink: 0; }
             .room-locked {
                 opacity: 0.4 !important;       
@@ -117,6 +225,7 @@
             }
             .device { 
                 color: #053df7; 
+                font-family: monospace;
                 font-size: 1.3rem; 
                 line-height: 1.5; 
             }
@@ -146,15 +255,25 @@
                     letter-spacing: 0.5px; 
                 }
             .sensor-value { 
-                    font-size: 1.15rem; 
-                    font-weight: bold; 
+                    font-size: clamp(1.1rem, 2.2vw, 1.4rem) !important;
+                    font-weight: 900;
                     margin-top: 5px; 
                     color: #fca903; 
                     white-space: nowrap; 
                     overflow: hidden; 
                     text-overflow: ellipsis;
                 }
-            .btn { padding: 5px 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 1.0rem; font-weight: bold; transition: background 0.2s, transform 0.1s; white-space: nowrap; }
+            .btn { 
+                font-size: clamp(0.85rem, 1.8vw, 1.05rem) !important;
+                padding: clamp(5px, 1.2vw, 10px)  !important;
+                border: none; 
+                border-radius: 5px; 
+                cursor: pointer; 
+                font-weight: bold; 
+                transition: background 0.2s, 
+                transform 0.1s; 
+                white-space: nowrap; 
+            }
             .scan-btn { background: #3498db; color: white; }
             .btn-disabled {
                 opacity: 0.3 !important;       
@@ -173,11 +292,11 @@
                 background: #1e1e1e; 
                 border-radius: 12px; 
                 padding: 15px; 
-                max-width: 1200px; 
+                max-width: 1200px ; 
                 margin: 0 auto; 
                 box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
-                border: 1px solid #333; 
-                min-height: 180px; 
+                border: 1px solid #fc0505; 
+                min-height: 120px ; 
             }
             .serial-header { 
                 display: flex; 
@@ -196,12 +315,12 @@
             .clear-btn { 
                 background: #333; 
                 color: #aaa; 
-                padding: 4px 12px; 
-                font-size: 1.1rem; 
+                padding: 6px 10px; 
                 border: 1px solid #444; 
                 border-radius: 4px; 
                 cursor: pointer; 
-                font-weight: bold; 
+                font-size: clamp(0.85rem, 2.2vw, 1.1rem) !important;
+                font-weight: clamp(900, 1.8vw, 700) !important; 
             }
             .clear-btn:hover { 
                 background: #fc1a03; 
@@ -209,7 +328,7 @@
                 border-color: #e74c3c; 
             }
             .serial-terminal { 
-                height: 190px; 
+                height: 150px; 
                 overflow-y: auto; 
                 font-family: 'Inter', -apple-system, sans-serif; 
                 font-size: 1.0rem; 
@@ -225,9 +344,9 @@
                 font-weight: bold; 
             }
         </style>
-    </head>
-    <body>
-       <div class="time-box">
+        </head>
+        <body>
+           <div class="time-box">
             <div class="clock-box">
                 <span class="time-value" id="live-clock">00:00:00 - 01/01/2026</span>
                 </div class="time-left"> <select class="time-select" id="mode-select" onchange="sendmode(this.value)">
@@ -239,19 +358,18 @@
                 <input type="time" step="1" class="time-select" id="timer-input" style="color:#ff9f43; font-family:monospace; font-size:1.2rem; padding:8px 10px;">
                 <button class="btn" style="background:#ff9f43; color:white; padding:10px 14px; font-size:1.1rem;" onclick="sendtimer(document.getElementById('timer-input').value)">📤 Gửi</button>
             </div>            
-         </div>
+           </div>
 
-<div class="status-bar" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto 25px auto; width: 100%;">
-    
-    <div class="status-card" style="display: flex; align-items: center; width: 100%;">
-        <div class="status-info" style="flex-grow: 1; width: 100%;">
+            <div class="status-bar" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto 25px auto; width: 100%;">
+            <div class="status-card" style="display: flex; align-items: center; width: 100%;">
+           <div class="status-info" style="flex-grow: 1; width: 100%;">
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid #f1f2f6; padding-bottom: 6px; margin-bottom: 6px;">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <span class="status-label" style="margin: 0;">Hệ thống Web</span>
+                    <span class="status-label" style="margin: 0;">WebSocket</span>
                     <div class="status-dot" id="dot-io" style="margin: 0; width: 10px; height: 10px;"></div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <span class="status-label" style="margin: 0; font-size: 1.15rem; text-transform: uppercase;">PLC S7-1200</span>
+                    <span class="status-label" style="margin: 0; font-size: 1.0rem; text-transform: uppercase;">PLC S7-1200</span>
                     <div class="status-dot" id="dot-s7" style="background: #e74c3c; margin: 0; width: 10px; height: 10px;"></div>
                 </div>
             </div>
@@ -259,94 +377,97 @@
                 <span class="status-value" id="web-status" style="font-size: 1rem; margin: 0;">Đang kết nối...</span>
                 <span class="status-value" style="font-size: 1rem; margin: 0;"><b id="s7-status" style="color: #e74c3c;">DisConnected</b></span>
             </div>
-            
-        </div>
-    </div>
-    <div class="status-card">
-        <div class="status-info"><span class="status-label">Trạng thái kết nối</span><span class="status-value" id="total-nodes">0 / 3 Tủ Online</span></div>
-        <div style="font-size: 1.3rem; line-height: 1;">📡</div>
-    </div>
-        <div class="status-card">
-            <div class="status-info"><span class="status-label">Tín hiệu tổng (TXD)</span><span class="status-value" id="gateway-rssitx">Chưa rõ</span></div>
-            <div style="font-size: 1.3rem; line-height: 1;">📶</div>
-        </div>
-    </div>
-       <div id="rooms" class="rooms">
-            <div class="room room-locked" id="node-Module_1">
-                <div class="room-title">
-                    <span class="status-label">🖥️ Tủ 1</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_1')">🔍 Quét</button><button class="btn save-btn" onclick="savenode('Module_1')">💾 Lưu</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_1')">🗑️ Xóa</button></div></div>
-                    <div class="device"><b>ESP32-SX1278</b><br>📶 RSSI RXD: <span class="rssi-val">-127 dBm</span>
-                    <div class="sensor-grid"><div class="sensor">
-                    <div class="sensor-name">🌡️ Nhiệt độ</div>
-                    <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
-                    <div class="sensor-name">💧 Độ ẩm</div>
-                    <div class="sensor-value hum-val">0.0%</div></div><div class="sensor">
-                    <div class="sensor-name">🛰️ Trạng thái</div>
-                    <div class="sensor-value status-val">OFF line</div>
-                    </div><div class="sensor">
-                    <div class="sensor-name">🆔 CHIP ID</div>
-                    <div class="sensor-value chip-val">Chưa rõ</div>
-                    </div></div></div></div>
-                    <div class="room room-locked" id="node-Module_2">
-                <div class="room-title">
-                    <span class="status-label">🖥️ Tủ 2</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_2')">🔍 Quét</button><button class="btn save-btn" onclick="savenode('Module_2')">💾 Lưu</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_2')">🗑️ Xóa</button></div></div>
-                    <div class="device"><b>ESP32-SX1278</b><br>📶 RSSI RXD: <span class="rssi-val">-127 dBm</span>
-                    <div class="sensor-grid"><div class="sensor">
-                    <div class="sensor-name">🌡️ Nhiệt độ</div>
-                    <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
-                    <div class="sensor-name">💧 Độ ẩm</div>
-                    <div class="sensor-value hum-val">0.0%</div></div><div class="sensor">
-                    <div class="sensor-name">🛰️ Trạng thái</div>
-                    <div class="sensor-value status-val">OFF line</div>
-                    </div><div class="sensor">
-                    <div class="sensor-name">🆔 CHIP ID</div>
-                    <div class="sensor-value chip-val">Chưa rõ</div>
-                    </div></div></div></div>
-                    <div class="room room-locked" id="node-Module_3">
-                <div class="room-title">
-                    <span class="status-label">🖥️ Tủ 3</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_3')">🔍 Quét</button><button class="btn save-btn" onclick="savenode('Module_3')">💾 Lưu</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_3')">🗑️ Xóa</button></div></div>
-                    <div class="device"><b>ESP32-SX1278</b><br>📶 RSSI RXD: <span class="rssi-val">-127 dBm</span>
-                    <div class="sensor-grid"><div class="sensor">
-                    <div class="sensor-name">🌡️ Nhiệt độ</div>
-                    <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
-                    <div class="sensor-name">💧 Độ ẩm</div>
-                    <div class="sensor-value hum-val">0.0%</div></div><div class="sensor">
-                    <div class="sensor-name">🛰️ Trạng thái</div>
-                    <div class="sensor-value status-val">OFF line</div>
-                    </div><div class="sensor">
-                    <div class="sensor-name">🆔 CHIP ID</div>
-                    <div class="sensor-value chip-val">Chưa rõ</div>
-                    </div></div></div></div>
-                    </div><div class="serial-box">
-                    <div class="serial-box">
-                <div class="serial-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap !important; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid #333; gap: 15px 50px;">
-                    <span class="serial-title" style="white-space: nowrap; font-weight: bold; color: #edf1f2; font-size: 1.15rem;">📟 Serial Monitor</span>
-                    <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1; min-width: 280px; margin: 0; order: 2;">
-                        <input type="text" id="SendSerial" placeholder="Message (Enter to send)" style="flex-grow: 1; background: #2d2d2d; color: #00ff00; border: 1px solid #444; padding: 6px 12px; border-radius: 4px; font-family: monospace; outline: none; transition: none;" onkeydown="if(event.key==='Enter') sendSerialCmd(this.value)">
-                        <button class="clear-btn" style="border-color: #00ff00; color: #00ff00; white-space: nowrap;" onclick="sendSerialCmd(document.getElementById('SendSerial').value)">Gửi</button>
-                    </div>
-                    <div style="flex-shrink: 0; order: 1;">
-                        <button class="clear-btn" style="white-space: nowrap;" onclick="clearSerialLog()">Xóa</button>
-                    </div>
-                </div>
-                <div class="serial-terminal" id="serial-terminal"></div>
+                
             </div>
-              <div id="toast">Thông báo hệ thống</div><script>
-                var loc=window.location;
-                   var prefix=loc.protocol === "https:"?"wss://":"ws://";
-                   var gateway=prefix.concat(loc.host,"/ws");var websocket;
-
+            </div>
+        <div class="status-card">
+            <div class="status-info"><span class="status-label">Trạng thái kết nối</span><span class="status-value" id="total-nodes">0 / 3 Tủ Online</span></div>
+            <div style="font-size: 1.3rem; line-height: 1;">📡</div>
+        </div>
+            <div class="status-card">
+                <div class="status-info"><span class="status-label">Tín hiệu tổng (TXD)</span><span class="status-value" id="gateway-rssitx">Chưa rõ</span></div>
+                <div style="font-size: 1.3rem; line-height: 1;">📶</div>
+             </div>
+             </div>
+             <div id="rooms" class="rooms" >
+                    <div class="room room-locked" id="node-Module_1"> <div class="room-title">
+                        <span class="status-label"> Tủ 1</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_1')">🔍 Quét</button><button class="btn save-btn" onclick="savenode('Module_1')">💾 Lưu</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_1')">🗑️ Xóa</button></div></div>
+                        <div class="device">📶 RSSI RXD: <span class="rssi-val">-127 dBm</span>
+                        <div class="sensor-grid"><div class="sensor">
+                        <div class="sensor-name">🌡️ Nhiệt độ</div>
+                        <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
+                        <div class="sensor-name">💧 Độ ẩm</div>
+                        <div class="sensor-value hum-val">0.0%</div></div><div class="sensor">
+                        <div class="sensor-name">🛰️ Trạng thái</div>
+                        <div class="sensor-value status-val">OFF line</div>
+                        </div><div class="sensor">
+                        <div class="sensor-name">🆔 CHIP ID</div>
+                        <div class="sensor-value chip-val">Chưa rõ</div>
+                        </div></div></div></div>
+                    <div class="room room-locked" id="node-Module_2"><div class="room-title">
+                        <span class="status-label"> Tủ 2</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_2')">🔍 Quét</button><button class="btn save-btn" onclick="savenode('Module_2')">💾 Lưu</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_2')">🗑️ Xóa</button></div></div>
+                        <div class="device">📶 RSSI RXD: <span class="rssi-val">-127 dBm</span>
+                        <div class="sensor-grid"><div class="sensor">
+                        <div class="sensor-name">🌡️ Nhiệt độ</div>
+                        <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
+                        <div class="sensor-name">💧 Độ ẩm</div>
+                        <div class="sensor-value hum-val">0.0%</div></div><div class="sensor">
+                        <div class="sensor-name">🛰️ Trạng thái</div>
+                        <div class="sensor-value status-val">OFF line</div>
+                        </div><div class="sensor">
+                        <div class="sensor-name">🆔 CHIP ID</div>
+                        <div class="sensor-value chip-val">Chưa rõ</div>
+                        </div></div></div></div>
+                    <div class="room room-locked" id="node-Module_3"><div class="room-title">
+                        <span class="status-label"> Tủ 3</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_3')">🔍 Quét</button><button class="btn save-btn" onclick="savenode('Module_3')">💾 Lưu</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_3')">🗑️ Xóa</button></div></div>
+                        <div class="device">📶 RSSI RXD: <span class="rssi-val">-127 dBm</span>
+                        <div class="sensor-grid"><div class="sensor">
+                        <div class="sensor-name">🌡️ Nhiệt độ</div>
+                        <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
+                        <div class="sensor-name">💧 Độ ẩm</div>
+                        <div class="sensor-value hum-val">0.0%</div></div><div class="sensor">
+                        <div class="sensor-name">🛰️ Trạng thái</div>
+                        <div class="sensor-value status-val">OFF line</div>
+                        </div><div class="sensor">
+                        <div class="sensor-name">🆔 CHIP ID</div>
+                        <div class="sensor-value chip-val">Chưa rõ</div>
+                        </div></div></div></div>
+                        </div>
+                            <div class="serial-box">
+                                <div class="serial-box">
+                                    <div class="serial-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap !important; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid #fc0505; gap: 12px 20px;">
+                                        
+                                        <span class="serial-title" style="white-space: nowrap; font-weight: bold; color: #edf1f2; font-size: clamp(0.95rem, 2vw, 1.0rem) !important; order: 1;">📟 Serial Monitor</span>
+                                        
+                                        <div style="flex-shrink: 0; order: 2;">
+                                            <button class="clear-btn" style="white-space: nowrap;" onclick="clearSerialLog()">Xóa</button>
+                                        </div>
+                                        
+                                        <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1; width: 100%; max-width: auto  !important; margin: 0 auto 0 0; order: 3;">
+                                            <input type="text" id="SendSerial" placeholder="Message (Enter to send)" style="flex-grow: 1; min-width: auto !important; background: #2d2d2d; color: #00ff00; border: 1px solid #444; border-radius: 4px; font-family: monospace; outline: none; transition: none; font-size: clamp(0.85rem, 1.8vw, 1.05rem) !important; padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px) !important;" onkeydown="if(event.key==='Enter') sendSerialCmd(this.value)">
+                                            <button class="clear-btn" style="border-color: #00ff00; color: #00ff00; white-space: nowrap;" onclick="sendSerialCmd(document.getElementById('SendSerial').value)">Gửi</button>
+                                        </div>
+                                    </div>
+                                <div class="serial-terminal" id="serial-terminal"></div>
+                            </div>
+                        </div>
+                    <div id="toast">Thông báo hệ thống</div>
+                <script>
+                    var loc=window.location;
+                    var prefix=loc.protocol === "https:"?"wss://":"ws://";
+                    var gateway=prefix.concat(loc.host,"/ws");
+                    var websocket;
                     function logToTerminal(rawText) {
-                    var term = document.getElementById('serial-terminal');
-                    var now = new Date();
-                    var timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + ":" + String(now.getSeconds()).padStart(2, '0');
-                    var newLog = document.createElement('div');
-                    newLog.innerHTML = '<span class="log-time">[' + timeStr + ']</span>' + rawText;
-                    term.appendChild(newLog);
-                    term.scrollTop = term.scrollHeight;
-                    if (term.children.length > 50) { term.removeChild(term.firstChild); 
-                }
-            }
+                        var term = document.getElementById('serial-terminal');
+                        var now = new Date();
+                        var timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + ":" + String(now.getSeconds()).padStart(2, '0');
+                        var newLog = document.createElement('div');
+                        newLog.innerHTML = '<span class="log-time">[' + timeStr + ']</span>' + rawText;
+                        term.appendChild(newLog);
+                        term.scrollTop = term.scrollHeight;
+                        if (term.children.length > 50) { term.removeChild(term.firstChild); 
+                        }
+                        }
 
                 function clearSerialLog(){document.getElementById('serial-terminal').innerHTML='';}
                 function sendmode(val){
@@ -390,6 +511,11 @@
                     };
                     websocket.onmessage=runmsg;
                 }
+                window.addEventListener('beforeunload', function () {
+                    if (websocket && websocket.readyState === 1) {
+                        websocket.close(1000, "Trang Web đã đóng");
+                    }
+                });
                 document.addEventListener("DOMContentLoaded", function() { 
                     initWebSocket(); 
                     updateModeColor(document.getElementById('mode-select').value);
@@ -461,23 +587,20 @@
                 var tempVal=node.temp!==undefined?node.temp:(node.temp1!==undefined?node.temp1:(node.temp2!==undefined?node.temp2:node.temp3));
                 if(tempVal!==undefined)roomEl.querySelector('.temp-val').textContent=parseFloat(tempVal).toFixed(1)+'°C';
                     var humVal=node.hum!==undefined?node.hum:(node.hum1!==undefined?node.hum1:(node.hum2!==undefined?node.hum2:node.hum3));
-                    // --- THUẬT TOÁN TỰ ĐỘNG ĐỔI ĐỘ ẨM THÀNH PACKET SNR KHI < 20% ---
                     if (humVal !== undefined) {
-                        var hValue = parseFloat(humVal).toFixed(1); // Lấy giá trị độ ẩm thô từ mạch gửi lên
-                        var labelEl = roomEl.querySelectorAll('.sensor-name')[1]; // Lấy nhãn chữ ô thứ 2
-                        var valueEl = roomEl.querySelector('.hum-val');          // Lấy ô số liệu hiển thị
+                        var hValue = parseFloat(humVal).toFixed(1); 
+                        var labelEl = roomEl.querySelectorAll('.sensor-name')[1]; 
+                        var valueEl = roomEl.querySelector('.hum-val');          
                         
                         if (labelEl && valueEl) {
                             if (hValue < 20.0) {
-                                // Nếu độ ẩm nhỏ hơn 20%, biến ô này thành ô hiển thị chất lượng sóng LoRa (SNR)
                                 labelEl.textContent = "🛰️ PacketSnr";
-                                valueEl.textContent ="📡 " + hValue + " dB"; // Đổi đơn vị sang dB
-                                valueEl.style.color = "#3498db";      // Đổi chữ sang màu xanh dương cho nổi bật
+                                valueEl.textContent ="📡 " + hValue + " dB";
+                                valueEl.style.color = "#3498db";     
                             } else {
-                                // Nếu độ ẩm lớn hơn hoặc bằng 20%, trả về trạng thái đo độ ẩm mặc định
                                 labelEl.textContent = "💧 Độ ẩm";
                                 valueEl.textContent = hValue + "%";
-                                valueEl.style.color = "";             // Trả về màu chữ mặc định của trang web
+                                valueEl.style.color = "";            
                             }
                         }
                     }
@@ -515,9 +638,9 @@
                 statusEl.style.color="#2ecc71";
             }
              else 
-                 if(checkVal.includes("OFF")||checkVal==="FALSE"||checkVal==="0"){statusEl.style.color="#e74c3c";}else{statusEl.style.color="#2f3542";}}}});
+                if(checkVal.includes("OFF")||checkVal==="FALSE"||checkVal==="0"){statusEl.style.color="#e74c3c";}else{statusEl.style.color="#2f3542";}}}});
                     if(hOnline!==null){document.getElementById('total-nodes').textContent=hOnline+" / "+listData.length+" Tủ Online";
-                      if (hOnline !== null && hOnline !== undefined) {
+                       if (hOnline !== null && hOnline !== undefined) {
                             var count = parseInt(hOnline);
                             var tu1 = document.getElementById('node-Module_1');
                             var tu2 = document.getElementById('node-Module_2');
@@ -576,3 +699,5 @@
             </script>
         </body>
     </html>
+)rawliteral";
+#endif
