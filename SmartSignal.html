@@ -105,7 +105,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                 font-size: clamp(1.0rem, 2.2vw, 1.15rem) !important;
                 padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px) !important; 
                 outline: none; 
-                max-width: 320px;        
+                max-width: 300px;        
                 cursor: pointer;
                 align-items: center;   
                 text-align: center;   
@@ -290,12 +290,12 @@ const char index_html[] PROGMEM = R"rawliteral(
             @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
             .serial-box { 
                 background: #1e1e1e; 
-                border-radius: 12px; 
-                padding: 15px; 
+                border-radius: 18px; 
+                padding: 10px; 
                 max-width: 1200px ; 
                 margin: 0 auto; 
                 box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
-                border: 1px solid #fc0505; 
+                border: 2px solid #fc0505; 
                 min-height: 120px ; 
             }
             .serial-header { 
@@ -328,7 +328,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                 border-color: #e74c3c; 
             }
             .serial-terminal { 
-                height: 150px; 
+                height: 180px; 
                 overflow-y: auto; 
                 font-family: 'Inter', -apple-system, sans-serif; 
                 font-size: 1.0rem; 
@@ -394,7 +394,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                         <span class="status-label"> Tủ 1</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_1')">🔍 Quét</button><button class="btn save-btn" onclick="savenode('Module_1')">💾 Lưu</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_1')">🗑️ Xóa</button></div></div>
                         <div class="device">📶 RSSI RXD: <span class="rssi-val">-127 dBm</span>
                         <div class="sensor-grid"><div class="sensor">
-                        <div class="sensor-name">🌡️ Nhiệt độ</div>
+                        <div class="sensor-name">🌅 Nhiệt độ 🪾</div>
                         <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
                         <div class="sensor-name">💧 Độ ẩm</div>
                         <div class="sensor-value hum-val">0.0%</div></div><div class="sensor">
@@ -408,7 +408,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                         <span class="status-label"> Tủ 2</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_2')">🔍 Quét</button><button class="btn save-btn" onclick="savenode('Module_2')">💾 Lưu</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_2')">🗑️ Xóa</button></div></div>
                         <div class="device">📶 RSSI RXD: <span class="rssi-val">-127 dBm</span>
                         <div class="sensor-grid"><div class="sensor">
-                        <div class="sensor-name">🌡️ Nhiệt độ</div>
+                        <div class="sensor-name">🌅 Nhiệt độ 🪾</div>
                         <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
                         <div class="sensor-name">💧 Độ ẩm</div>
                         <div class="sensor-value hum-val">0.0%</div></div><div class="sensor">
@@ -422,7 +422,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                         <span class="status-label"> Tủ 3</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_3')">🔍 Quét</button><button class="btn save-btn" onclick="savenode('Module_3')">💾 Lưu</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_3')">🗑️ Xóa</button></div></div>
                         <div class="device">📶 RSSI RXD: <span class="rssi-val">-127 dBm</span>
                         <div class="sensor-grid"><div class="sensor">
-                        <div class="sensor-name">🌡️ Nhiệt độ</div>
+                        <div class="sensor-name">🌅 Nhiệt độ 🪾</div>
                         <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
                         <div class="sensor-name">💧 Độ ẩm</div>
                         <div class="sensor-value hum-val">0.0%</div></div><div class="sensor">
@@ -431,25 +431,20 @@ const char index_html[] PROGMEM = R"rawliteral(
                         </div><div class="sensor">
                         <div class="sensor-name">🆔 CHIP ID</div>
                         <div class="sensor-value chip-val">Chưa rõ</div>
-                        </div></div></div></div>
-                        </div>
-                            <div class="serial-box">
-                                <div class="serial-box">
-                                    <div class="serial-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap !important; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid #fc0505; gap: 12px 20px;">
-                                        
-                                        <span class="serial-title" style="white-space: nowrap; font-weight: bold; color: #edf1f2; font-size: clamp(0.95rem, 2vw, 1.0rem) !important; order: 1;">📟 Serial Monitor</span>
-                                        
-                                        <div style="flex-shrink: 0; order: 2;">
-                                            <button class="clear-btn" style="white-space: nowrap;" onclick="clearSerialLog()">Xóa</button>
-                                        </div>
-                                        
-                                        <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1; width: 100%; max-width: auto  !important; margin: 0 auto 0 0; order: 3;">
-                                            <input type="text" id="SendSerial" placeholder="Message (Enter to send)" style="flex-grow: 1; min-width: auto !important; background: #2d2d2d; color: #00ff00; border: 1px solid #444; border-radius: 4px; font-family: monospace; outline: none; transition: none; font-size: clamp(0.85rem, 1.8vw, 1.05rem) !important; padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px) !important;" onkeydown="if(event.key==='Enter') sendSerialCmd(this.value)">
-                                            <button class="clear-btn" style="border-color: #00ff00; color: #00ff00; white-space: nowrap;" onclick="sendSerialCmd(document.getElementById('SendSerial').value)">Gửi</button>
-                                        </div>
+                        </div></div></div></div> 
+                    </div>
+                        <div class="serial-box">
+                            <div class="serial-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap !important; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid #fc0505; gap: 12px 20px;">                                       
+                                <span class="serial-title" style="white-space: nowrap; font-weight: bold; color: #edf1f2; font-size: clamp(0.95rem, 2vw, 1.0rem) !important; order: 1;">📟 Serial Monitor</span>
+                                    <div style="flex-shrink: 0; order: 2;">
+                                        <button class="clear-btn" style="white-space: nowrap;" onclick="clearSerialLog()">Xóa</button>
+                                    </div>                                        
+                                    <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1; width: 100%; max-width: auto  !important; margin: 0 auto 0 0; order: 3;">
+                                        <input type="text" id="SendSerial" placeholder="Message (Enter to send)" style="flex-grow: 1; min-width: auto !important; background: #2d2d2d; color: #00ff00; border: 1px solid #444; border-radius: 4px; font-family: monospace; outline: none; transition: none; font-size: clamp(0.85rem, 1.8vw, 1.05rem) !important; padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px) !important;" onkeydown="if(event.key==='Enter') sendSerialCmd(this.value)">
+                                        <button class="clear-btn" style="border-color: #00ff00; color: #00ff00; white-space: nowrap;" onclick="sendSerialCmd(document.getElementById('SendSerial').value)">Gửi</button>
                                     </div>
-                                <div class="serial-terminal" id="serial-terminal"></div>
-                            </div>
+                                </div>
+                            <div class="serial-terminal" id="serial-terminal"></div>
                         </div>
                     <div id="toast">Thông báo hệ thống</div>
                 <script>
@@ -585,8 +580,8 @@ const char index_html[] PROGMEM = R"rawliteral(
                 var roomEl=document.getElementById('node-'+targetId);
                 if(roomEl){
                 var tempVal=node.temp!==undefined?node.temp:(node.temp1!==undefined?node.temp1:(node.temp2!==undefined?node.temp2:node.temp3));
-                if(tempVal!==undefined)roomEl.querySelector('.temp-val').textContent=parseFloat(tempVal).toFixed(1)+'°C';
-                    var humVal=node.hum!==undefined?node.hum:(node.hum1!==undefined?node.hum1:(node.hum2!==undefined?node.hum2:node.hum3));
+                    if(tempVal!==undefined)roomEl.querySelector('.temp-val').textContent='🌡️'+parseFloat(tempVal).toFixed(1)+' °C';
+                var humVal=node.hum!==undefined?node.hum:(node.hum1!==undefined?node.hum1:(node.hum2!==undefined?node.hum2:node.hum3));
                     if (humVal !== undefined) {
                         var hValue = parseFloat(humVal).toFixed(1); 
                         var labelEl = roomEl.querySelectorAll('.sensor-name')[1]; 
@@ -604,6 +599,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                             }
                         }
                     }
+                    
                     var chipIdVal=node["chip id "]||node["chip_id"]||node["chip id 1"]||node["chip id 2"]||node["chip id 3"];
                     if(chipIdVal !== undefined) roomEl.querySelector('.chip-val').textContent = chipIdVal;
                         if (chipIdVal !== undefined && chipIdVal !== null) {
