@@ -156,15 +156,30 @@ const char index_html[] PROGMEM = R"rawliteral(
             .status-card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; overflow: hidden; }
             .status-info { display: flex; flex-direction: column; min-width: 0; }
             .status-label { 
-                color: #e01f1f; 
-                font-family: monospace;
+                font-family: 'Inter', 'Segoe UI', sans-serif; 
                 font-weight: bold; 
-                text-transform: uppercase; 
                 font-size: clamp(0.95rem, 1.8vw, 1.0rem) !important;
                 padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px) !important; 
+                color: #e01f1f;
             }
-            .status-value { font-size: 1.0rem; font-weight: bold; color: #2f3542; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-            .status-dot { width: 12px; height: 12px; border-radius: 50%; background: #e74c3c; flex-shrink: 0; margin-left: 10px; }
+            .status-value { 
+                font-family: 'Inter', 'Segoe UI', sans-serif; 
+                font-size: 1.0rem; 
+                font-weight: bold; 
+                color: #2f3542; 
+                margin-top: 3px; 
+                white-space: nowrap; 
+                overflow: hidden; 
+                text-overflow: ellipsis; 
+            }
+            .status-dot { 
+                width: 12px; 
+                height: 12px; 
+                border-radius: 50%; 
+                background: #e74c3c; 
+                flex-shrink: 0; 
+                margin-left: 10px; 
+            }
             #live-clock {
                 font-size: clamp(0.95rem, 2.5vw, 1.15rem) !important;
                 font-weight: bold;
@@ -251,7 +266,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                     }
             .sensor-name { 
                     font-size: 0.95rem; color: #e01f1f; 
-                    font-weight: bold; text-transform: uppercase; 
+                    font-weight: bold;
                     letter-spacing: 0.5px; 
                 }
             .sensor-value { 
@@ -342,7 +357,40 @@ const char index_html[] PROGMEM = R"rawliteral(
                 color: #f70202; 
                 margin-right: 8px; 
                 font-weight: bold; 
-            }
+            }    
+    .signal-icon {
+        display: flex;
+        align-items: flex-end; /* Ép chân các vạch sóng luôn bám sát đáy */
+        gap: 3px;              /* Khoảng cách giữa các vạch mảnh */
+        height: 24px;          /* Chiều cao tổng thể của cột sóng */
+        flex-shrink: 0;
+    }
+
+    .w-bar {
+        width: 3px;            /* Thu hẹp bề ngang thành 3px để xếp đủ 10 vạch mảnh rất đẹp */
+        background: rgba(255, 255, 255, 0.1); /* Mặc định mờ 10% khi mất sóng */
+        border-radius: 1px;
+        transition: background 0.3s ease, height 0.3s ease;
+    }
+
+    .w-bar:nth-child(1)  { height: 10%;  }
+    .w-bar:nth-child(2)  { height: 20%;  }
+    .w-bar:nth-child(3)  { height: 30%;  }
+    .w-bar:nth-child(4)  { height: 40%;  }
+    .w-bar:nth-child(5)  { height: 50%;  }
+    .w-bar:nth-child(6)  { height: 60%;  }
+    .w-bar:nth-child(7)  { height: 70%;  }
+    .w-bar:nth-child(8)  { height: 80%;  }
+    .w-bar:nth-child(9)  { height: 90%;  }
+    .w-bar:nth-child(10) { height: 100%; }
+
+    .w-bar.level-active {
+        background: #00ff00 !important; /* Màu xanh lá công nghệ rực rỡ */
+        box-shadow: 0 0 6px rgba(0, 255, 0, 0.6); /* Tạo hiệu ứng lóe sáng nhẹ */
+    }
+
+
+
         </style>
         </head>
         <body>
@@ -369,7 +417,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                     <div class="status-dot" id="dot-io" style="margin: 0; width: 10px; height: 10px;"></div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <span class="status-label" style="margin: 0; font-size: 1.0rem; text-transform: uppercase;">PLC S7-1200</span>
+                    <span class="status-label" style="margin: 0; font-size: 1.0rem; ">PLC S7-1200</span>
                     <div class="status-dot" id="dot-s7" style="background: #e74c3c; margin: 0; width: 10px; height: 10px;"></div>
                 </div>
             </div>
@@ -380,14 +428,26 @@ const char index_html[] PROGMEM = R"rawliteral(
                 
             </div>
             </div>
-        <div class="status-card">
-            <div class="status-info"><span class="status-label">Trạng thái kết nối</span><span class="status-value" id="total-nodes">0 / 3 Tủ Online</span></div>
-            <div style="font-size: 1.3rem; line-height: 1;">📡</div>
+        <div class="status-card" style="display: flex; align-items: center; width: 100%;">
+            <div class="status-info" style="flex-grow: 1; width: 100%;">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid #f1f2f6; padding-bottom: 6px; margin-bottom: 6px;">
+                <span class="status-label" style="margin: 0;">Trạng Thái Kết Nối</span>
+                <span class="status-label" style="margin: 0; font-size: 0.75rem; color: #888888;">Version</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <span class="status-value" id="total-nodes" style="font-size: 1rem; margin: 0;">0 / 3 Tủ kết nối</span>
+                <span class="status-value" style="font-size: 1rem; margin: 0; font-family: monospace; color: #3498db;"><b id="web-version">v3.1.0</b></span>
+            </div>
+            
         </div>
-            <div class="status-card">
-                <div class="status-info"><span class="status-label">Tín hiệu tổng (TXD)</span><span class="status-value" id="gateway-rssitx">Chưa rõ</span></div>
+        <div style="font-size: 1.3rem; line-height: 1; margin-left: 15px; flex-shrink: 0;">📡</div>
+    </div>
+        <div class="status-card">
+                <div class="status-info"><span class="status-label">Tín Hiệu Tổng (TXD)</span><span class="status-value" id="gateway-rssitx">Chưa rõ</span></div>
                 <div style="font-size: 1.3rem; line-height: 1;">📶</div>
-             </div>
+         </div>
              </div>
              <div id="rooms" class="rooms" >
                     <div class="room room-locked" id="node-Module_1"> <div class="room-title">
@@ -398,7 +458,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                         <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
                         <div class="sensor-name">💧 Độ ẩm</div>
                         <div class="sensor-value hum-val">0.0%</div></div><div class="sensor">
-                        <div class="sensor-name">🛰️ Trạng thái</div>
+                        <div class="sensor-name">🛰️ Trạng Thái</div>
                         <div class="sensor-value status-val">OFF line</div>
                         </div><div class="sensor">
                         <div class="sensor-name">🆔 CHIP ID</div>
@@ -412,7 +472,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                         <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
                         <div class="sensor-name">💧 Độ ẩm</div>
                         <div class="sensor-value hum-val">0.0%</div></div><div class="sensor">
-                        <div class="sensor-name">🛰️ Trạng thái</div>
+                        <div class="sensor-name">🛰️ Trạng Thái</div>
                         <div class="sensor-value status-val">OFF line</div>
                         </div><div class="sensor">
                         <div class="sensor-name">🆔 CHIP ID</div>
@@ -426,7 +486,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                         <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
                         <div class="sensor-name">💧 Độ ẩm</div>
                         <div class="sensor-value hum-val">0.0%</div></div><div class="sensor">
-                        <div class="sensor-name">🛰️ Trạng thái</div>
+                        <div class="sensor-name">🛰️ Trạng Thái</div>
                         <div class="sensor-value status-val">OFF line</div>
                         </div><div class="sensor">
                         <div class="sensor-name">🆔 CHIP ID</div>
@@ -524,6 +584,11 @@ const char index_html[] PROGMEM = R"rawliteral(
        if(data.status==="success"&&data.msg){
        var vnmMsg=data.msg.replace('thiet bi','Tủ').replace('Node','Tủ').replace('thanh cong','thành công');
        showToast(vnmMsg);return;}
+
+            if (data.version !== undefined && data.version !== null) {
+                document.getElementById('web-version').textContent = data.version;
+            }
+
             if (data.mode_now !== undefined && data.mode_now !== null) {
                 document.getElementById('mode-select').value = data.mode_now;
                 updateModeColor(data.mode_now);
@@ -627,7 +692,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                 }
             }
 
-        var loraVal=node.lora!==undefined?node.lora:(node.lora1!==undefined?node.lora1:(node.lora2!==undefined?node.lora2:(node["Trạng thái"]!==undefined?node["Trạng thái"]:node.relay)));
+        var loraVal=node.lora!==undefined?node.lora:(node.lora1!==undefined?node.lora1:(node.lora2!==undefined?node.lora2:(node["Trạng Thái"]!==undefined?node["Trạng Thái"]:node.relay)));
             if(loraVal!==undefined){var statusEl=roomEl.querySelector('.status-val');
             statusEl.textContent=loraVal;var checkVal=String(loraVal).toUpperCase().trim();
             if(checkVal.includes("ON")||checkVal==="TRUE"||checkVal==="1"){
@@ -695,5 +760,6 @@ const char index_html[] PROGMEM = R"rawliteral(
             </script>
         </body>
     </html>
+
 )rawliteral";
 #endif
