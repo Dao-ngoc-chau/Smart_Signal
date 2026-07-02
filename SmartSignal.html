@@ -47,8 +47,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                 height: 300vh;  
                 top: -100vh;
                 left: -100vw;
-                
-                background: conic-gradient(
+                 background: conic-gradient(
                     rgba(255, 0, 0, 0.9),       
                     rgba(255, 100, 0, 0.85),    
                     rgba(255, 230, 0, 0.9),     
@@ -437,8 +436,8 @@ const char index_html[] PROGMEM = R"rawliteral(
             </div>
             
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <span class="status-value" id="total-nodes" style="font-size: 1rem; margin: 0;">0 / 3 Tủ kết nối</span>
-                <span class="status-value" style="font-size: 1rem; margin: 0; font-family: monospace; color: #3498db;"><b id="web-version">v3.1.0</b></span>
+                <span class="status-value" id="total-nodes" style="font-size: 1rem; margin: 0;">0 / 3 Tủ </span>
+                <span class="status-value" style="font-size: 1rem; margin: 0; font-family: monospace; color: #3498db;"><b id="web-version">V:0.0 - ID 1: 00000000</b></span>
             </div>
             
         </div>
@@ -541,7 +540,6 @@ const char index_html[] PROGMEM = R"rawliteral(
                         modeEl.style.color = "#ffff00";     
                     }
                 }
-
                 function sendtimer(val) {
                     if (!val || !websocket || websocket.readyState !== 1) return;
                     websocket.send(JSON.stringify({action: "set_timer", value: val}));
@@ -552,7 +550,6 @@ const char index_html[] PROGMEM = R"rawliteral(
                     logToTerminal("<span style='color:#ff0505;'>Send-> " + val + "</span>");
                     document.getElementById('SendSerial').value = ''; 
                 }
-
                 function initWebSocket(){
                     websocket=new WebSocket(gateway);
                     websocket.onopen=function(){
@@ -605,17 +602,12 @@ const char index_html[] PROGMEM = R"rawliteral(
             if (data.s7_connected !== undefined && data.s7_connected !== null) {
                 var s7Txt = document.getElementById('s7-status');
                 var s7Dot = document.getElementById('dot-s7');
-                var checkS7 = String(data.s7_connected).toUpperCase().trim();
-                
-                if (checkS7 === "ON" || checkS7 === "TRUE" || checkS7 === "1") {
-                    s7Txt.textContent = "Connected";
-                    s7Txt.style.color = "#2ecc71";     
-                    s7Dot.style.background = "#2ecc71";
-                } else {
-                    s7Txt.textContent = "DisConnected";
-                    s7Txt.style.color = "#e74c3c";     
-                    s7Dot.style.background = "#e74c3c"; 
-                }
+                var fullString = String(data.s7_connected);
+                var prefix = fullString.substring(0, 2).toUpperCase();
+                var isConnected = (prefix === "ON" || prefix === "1_");
+                s7Txt.textContent = fullString.substring(2); 
+                s7Txt.style.color = "#010101";
+                s7Dot.style.background = isConnected ? "#2ecc71" : "#e74c3c";
             }
         
             if(data.mac_list!==undefined&&Array.isArray(data.mac_list)){
@@ -644,53 +636,53 @@ const char index_html[] PROGMEM = R"rawliteral(
                 }
                 var roomEl=document.getElementById('node-'+targetId);
                 if(roomEl){
-                var tempVal=node.temp!==undefined?node.temp:(node.temp1!==undefined?node.temp1:(node.temp2!==undefined?node.temp2:node.temp3));
-                    if(tempVal!==undefined)roomEl.querySelector('.temp-val').textContent='🌡️'+parseFloat(tempVal).toFixed(1)+' °C';
-                var humVal=node.hum!==undefined?node.hum:(node.hum1!==undefined?node.hum1:(node.hum2!==undefined?node.hum2:node.hum3));
-                    if (humVal !== undefined) {
-                        var hValue = parseFloat(humVal).toFixed(1); 
-                        var labelEl = roomEl.querySelectorAll('.sensor-name')[1]; 
-                        var valueEl = roomEl.querySelector('.hum-val');          
-                        
-                        if (labelEl && valueEl) {
-                            if (hValue < 20.0) {
-                                labelEl.textContent = "🛰️ PacketSnr";
-                                valueEl.textContent ="📡 " + hValue + " dB";
-                                valueEl.style.color = "#3498db";     
-                            } else {
-                                labelEl.textContent = "💧 Độ ẩm";
-                                valueEl.textContent = hValue + "%";
-                                valueEl.style.color = "";            
-                            }
-                        }
-                    }
-                    
-                    var chipIdVal=node["chip id "]||node["chip_id"]||node["chip id 1"]||node["chip id 2"]||node["chip id 3"];
-                    if(chipIdVal !== undefined) roomEl.querySelector('.chip-val').textContent = chipIdVal;
-                        if (chipIdVal !== undefined && chipIdVal !== null) {
-                            var txtCheck = String(chipIdVal).trim();
-                            var btnScan = roomEl.querySelector('.scan-btn'); 
-                            if (btnScan) {
-                                 if (txtCheck !== "" && txtCheck !== "Chưa rõ") {
-                                    btnScan.classList.add('btn-disabled'); 
+                    var tempVal=node.temp!==undefined?node.temp:(node.temp1!==undefined?node.temp1:(node.temp2!==undefined?node.temp2:node.temp3));
+                        if(tempVal!==undefined)roomEl.querySelector('.temp-val').textContent='🌡️'+parseFloat(tempVal).toFixed(1)+' °C';
+                    var humVal=node.hum!==undefined?node.hum:(node.hum1!==undefined?node.hum1:(node.hum2!==undefined?node.hum2:node.hum3));
+                        if (humVal !== undefined) {
+                            var hValue = parseFloat(humVal).toFixed(1); 
+                            var labelEl = roomEl.querySelectorAll('.sensor-name')[1]; 
+                            var valueEl = roomEl.querySelector('.hum-val');          
+                            
+                            if (labelEl && valueEl) {
+                                if (hValue < 20.0) {
+                                    labelEl.textContent = "🛰️ PacketSnr";
+                                    valueEl.textContent ="📡 " + hValue + " dB";
+                                    valueEl.style.color = "#3498db";     
                                 } else {
-                                    btnScan.classList.remove('btn-disabled'); 
+                                    labelEl.textContent = "💧 Độ ẩm";
+                                    valueEl.textContent = hValue + "%";
+                                    valueEl.style.color = "";            
                                 }
                             }
                         }
+                        
+                        var chipIdVal=node["chip id "]||node["chip_id"]||node["chip id 1"]||node["chip id 2"]||node["chip id 3"];
+                        if(chipIdVal !== undefined) roomEl.querySelector('.chip-val').textContent = chipIdVal;
+                            if (chipIdVal !== undefined && chipIdVal !== null) {
+                                var txtCheck = String(chipIdVal).trim();
+                                var btnScan = roomEl.querySelector('.scan-btn'); 
+                                if (btnScan) {
+                                    if (txtCheck !== "" && txtCheck !== "Chưa rõ") {
+                                        btnScan.classList.add('btn-disabled'); 
+                                    } else {
+                                        btnScan.classList.remove('btn-disabled'); 
+                                    }
+                                }
+                            }
 
-                if (node.rssi !== undefined) {
-                var rssiEl = roomEl.querySelector('.rssi-val');
-                var rssiStr = String(node.rssi);
-                rssiEl.textContent = rssiStr;
-                var rssiNum = parseInt(rssiStr);
-                if (!isNaN(rssiNum)) {
-                    if (rssiNum >= -80) {rssiEl.style.color = "#2ecc71"; 
-                    } else if (rssiNum < -80 && rssiNum >= -99) { rssiEl.style.color = "#e67e22"; 
-                    } else { rssiEl.style.color = "#e74c3c";
+                    if (node.rssi !== undefined) {
+                    var rssiEl = roomEl.querySelector('.rssi-val');
+                    var rssiStr = String(node.rssi);
+                    rssiEl.textContent = rssiStr;
+                    var rssiNum = parseInt(rssiStr);
+                    if (!isNaN(rssiNum)) {
+                        if (rssiNum >= -80) {rssiEl.style.color = "#2ecc71"; 
+                        } else if (rssiNum < -80 && rssiNum >= -99) { rssiEl.style.color = "#e67e22"; 
+                        } else { rssiEl.style.color = "#e74c3c";
+                        }
                     }
                 }
-            }
 
         var loraVal=node.lora!==undefined?node.lora:(node.lora1!==undefined?node.lora1:(node.lora2!==undefined?node.lora2:(node["Trạng Thái"]!==undefined?node["Trạng Thái"]:node.relay)));
             if(loraVal!==undefined){var statusEl=roomEl.querySelector('.status-val');
@@ -700,7 +692,7 @@ const char index_html[] PROGMEM = R"rawliteral(
             }
              else 
                 if(checkVal.includes("OFF")||checkVal==="FALSE"||checkVal==="0"){statusEl.style.color="#e74c3c";}else{statusEl.style.color="#2f3542";}}}});
-                    if(hOnline!==null){document.getElementById('total-nodes').textContent=hOnline+" / "+listData.length+" Tủ Online";
+                    if(hOnline!==null){document.getElementById('total-nodes').textContent=hOnline+" / "+listData.length+" Tủ";
                        if (hOnline !== null && hOnline !== undefined) {
                             var count = parseInt(hOnline);
                             var tu1 = document.getElementById('node-Module_1');
