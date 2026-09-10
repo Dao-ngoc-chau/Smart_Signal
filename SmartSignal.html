@@ -1,294 +1,754 @@
-#ifndef WEB_PAGE_H
-#define WEB_PAGE_H
-
-const char TEXT_HTML[] PROGMEM = R"=====(
+#ifndef INDEX_H
+#define INDEX_H
+const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32 LORA DASHBOARD</title>
-    <style>
-        /* --- HIỆU ỨNG LỐC XOÁY TOÀN TRANG --- */
-        body {
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #ffffff;
-            background-attachment: fixed; 
-            background: linear-gradient(0deg, #7a0016, #4a0072, #00154f, #004d40, #7a0016);
-            background-size: 200% 200%;
-            animation: locXoayToanTrang 12s linear infinite;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        @keyframes locXoayToanTrang {
-            0% { background-image: linear-gradient(0deg, #7a0016, #4a0072, #00154f, #004d40, #7a0016); background-position: 0% 0%; }
-            25% { background-image: linear-gradient(90deg, #4a0072, #00154f, #004d40, #7a0016, #4a0072); background-position: 50% 100%; }
-            50% { background-image: linear-gradient(180deg, #00154f, #004d40, #7a0016, #4a0072, #00154f); background-position: 100% 50%; }
-            75% { background-image: linear-gradient(270deg, #004d40, #7a0016, #4a0072, #00154f, #004d40); background-position: 50% 0%; }
-            100% { background-image: linear-gradient(360deg, #7a0016, #4a0072, #00154f, #004d40, #7a0016); background-position: 0% 0%; }
-        }
-
-        /* --- GIAO DIỆN KHUNG CHỨA CYBERPUNK --- */
-        .container {
-            width: 100%;
-            max-width: 600px;
-            background: rgba(0, 0, 0, 0.75);
-            border: 2px solid #00ff66;
-            box-shadow: 0 0 20px rgba(0, 255, 102, 0.2);
-            border-radius: 10px;
-            padding: 25px;
-            box-sizing: border-box;
-        }
-
-        .box-title {
-            text-transform: uppercase;
-            font-size: 1.6rem;
-            color: #00ff66;
-            text-align: center;
-            margin-bottom: 25px;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
-        }
-
-        .sub-section-title {
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            color: #00e5ff;
-            margin-top: 20px;
-            margin-bottom: 8px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        /* --- CẤU HÌNH Ô NHẬP / CHỌN --- */
-        .input-field {
-            width: 100%;
-            padding: 12px;
-            background: rgba(20, 20, 20, 0.8);
-            border: 1px solid #444;
-            color: #fff;
-            border-radius: 5px;
-            box-sizing: border-box;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .input-field:focus {
-            border-color: #00ff66;
-            box-shadow: 0 0 8px rgba(0, 255, 102, 0.3);
-        }
-
-        select.input-field {
-            text-align-last: center;
-            cursor: pointer;
-        }
-
-        /* --- NÚT BẤM VÀ THANH TIẾN TRÌNH --- */
-        .btn-nc {
-            text-transform: uppercase;
-            width: 100%;
-            padding: 14px;
-            background: #4a0072;
-            border: 1px solid #00ff66;
-            color: #00ff66;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 15px;
-            transition: all 0.2s;
-        }
-
-        .btn-nc:hover {
-            background: #00ff66;
-            color: #000;
-            box-shadow: 0 0 15px #00ff66;
-        }
-
-        #prg-container {
-            width: 100%;
-            background-color: #222;
-            border-radius: 5px;
-            margin-top: 15px;
-            display: none;
-            border: 1px solid #444;
-            overflow: hidden;
-        }
-
-        #prg-bar {
-            width: 0%;
-            height: 25px;
-            background-color: #ff9800;
-            color: black;
-            text-align: center;
-            line-height: 25px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: width 0.1s ease, background-color 0.3s ease;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <div class="box-title">ESP32 LoRa Dashboard</div>
-    
-    <div class="sub-section-title">Thời gian chu kỳ hệ thống</div>
-    <input id="input-time" class="input-field" style="text-align: center; font-size: 1.8rem; font-weight: bold; color: #ff9800;" placeholder="Thời gian..." min="1" value="00:00:00 00/00/0000" readonly>
-
-    <div class="sub-section-title">Địa Chỉ MAC (Tự động lưu)</div>
-    <select id="mac-list-dropdown" class="input-field" style="font-size: 1.1rem; font-weight: bold; color: #00ff66;">
-        <option value="">-- ĐANG TẢI DANH SÁCH MAC --</option>
-    </select>
-
-    <hr style="border: 0; border-top: 1px solid #333; margin: 25px 0;">
-
-    <div class="sub-section-title">Cập nhật ứng dụng hệ thống (OTA)</div>
-    <input type="file" id="file-input" class="input-field" accept=".bin">
-    <button id="btn-submit-update" class="btn-nc" onclick="batDauUploadFirmware()">Bắt đầu nạp firmware</button>
-    
-    <div id="prg-container">
-        <div id="prg-bar">0%</div>
-    </div>
-</div>
-
-<script>
-    var websocket;
-    
-    // TỰ ĐỘNG BẮT ĐÚNG GIAO THỨC WS / WSS ĐỂ CHỐNG LỖI BẢO MẬT HTTPS
-    function khoiTaoWebsocket() {
-        var giaoThucProtocol = (window.location.protocol === 'https:') ? 'wss://' : 'ws://';
-        var duongDanWs = giaoThucProtocol + window.location.hostname + '/ws';
-        
-        console.log("[WEBSOCKET] Kết nối tới: " + duongDanWs);
-        websocket = new WebSocket(duongDanWs);
-        
-        websocket.onmessage = function(event) {
-            var data = JSON.parse(event.data);
-            
-            // 1. Cập nhật ô hiển thị thời gian số lớn
-            if (data.time !== undefined) {
-                document.getElementById('input-time').value = data.time;
+    <html lang="vi">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Smart Signal</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://gstatic.com" crossorigin>
+        <style>
+            body { 
+                font-family: 'Inter', 'Segoe UI', sans-serif; 
+                background: #f4f6f9; 
+                padding: 20px; 
+                margin: 0; 
+                box-sizing: border-box; 
             }
-            
-            // 2. Xử lý danh sách MAC và đồng bộ hóa MAC mặc định chữ hoa
-            if (data.mac_list !== undefined && Array.isArray(data.mac_list)) {
-                var dropdown = document.getElementById('mac-list-dropdown');
-                var macMacDinh = (data.mac_default !== undefined) ? data.mac_default.toUpperCase().trim() : "";
+            @keyframes locXoayToanTrang {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+            html {
+                background: #0f172a; 
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                overflow: auto;
+            }
+             body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                margin: 0;
+                padding: clamp(5px, 1.0vw, 10px) clamp(10px, 2vw, 15px) !important; 
                 
-                dropdown.innerHTML = '<option value="">-- DANH SÁCH MAC --</option>';
+                background: #eef2f5;
+                position: relative;
+                min-height: 100vh;
+                box-sizing: border-box;
+                overflow-x: hidden;
+                z-index: 1;
+            }
+            body::before {
+                content: "";
+                position: fixed; 
+                width: 300vw;    
+                height: 300vh;  
+                top: -100vh;
+                left: -100vw;
+                 background: conic-gradient(
+                    rgba(255, 0, 0, 0.9),       
+                    rgba(255, 100, 0, 0.85),    
+                    rgba(255, 230, 0, 0.9),     
+                    rgba(0, 255, 50, 0.85),     
+                    rgba(0, 255, 255, 0.9),    
+                    rgba(0, 100, 255, 0.85),    
+                    rgba(150, 0, 255, 0.9),      
+                    rgba(255, 0, 150, 0.85),    
+                    rgba(255, 0, 0, 0.9)        
+                );
                 
-                data.mac_list.forEach(function(macStr) {
-                    var macChuanHoa = macStr.toUpperCase().trim();
-                    var opt = document.createElement('option');
-                    opt.value = macChuanHoa;
-                    opt.textContent = "Mac: " + macChuanHoa;
-                    
-                    if (macChuanHoa === macMacDinh) {
-                        opt.selected = true;
+                filter: blur(80px); 
+                animation: locXoayToanTrang 15s linear infinite; 
+                z-index: -2;
+            }
+            body::after {
+                content: "";
+                position: absolute;
+                top: 1px;    
+                left: 1px;
+                right: 1px;
+                bottom: 1px;
+                
+                background: rgba(17, 24, 39, 0.15) !important; 
+                
+                border-radius: 5px;
+                z-index: -1;
+            }
+
+            *, *:before, *:after { box-sizing: inherit; }
+            .time-box { 
+                background: #2c3e50; 
+                color: white; 
+                padding: 12px 20px; 
+                border-radius: 10px; 
+                max-width: 1200px; 
+                margin: 0 auto 15px auto; 
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                
+                display: flex; 
+                flex-direction: row;   
+                justify-content: space-between;
+                align-items: center;     
+                flex-wrap: wrap !important;
+                gap: 12px 20px;
+            }
+
+            .mac-select { 
+                background: #34495e; 
+                color: #08fc6f; 
+                border: 1px solid #455a64; 
+                border-radius: 6px; 
+                font-weight: bold; 
+                font-size: clamp(1.0rem, 2.2vw, 1.15rem) !important;
+                padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px) !important; 
+                outline: none; 
+                max-width: 300px;        
+                cursor: pointer;
+                align-items: center;   
+                text-align: center;   
+            }
+            .time-select { 
+                font-size: clamp(1.0rem, 1.8vw, 1.15rem) !important;
+                padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px) !important; 
+                background: #34495e; 
+                color: #05f2ea; 
+                border: 1px solid #455a64;   
+                border-radius: 6px; 
+                font-weight: bold;  
+                cursor: pointer; 
+                outline: none; 
+                align-items: center;   
+                text-align: left;     
+            }
+            .f { 
+                font-family: 'Courier New', Courier, monospace; 
+                font-size: 1.38rem;      
+                font-weight: 1000; 
+                color: white; 
+                white-space: nowrap; 
+            }
+            .time-title { 
+                font-weight: bold; 
+                font-size: 1.3rem;     
+                letter-spacing: 0.5px; 
+                white-space: nowrap; 
+            }     
+            .clock-box {
+                background: #34495e;    
+                border: 1px solid #455a64;
+                padding: 6px 12px;       
+                border-radius: 6px;     
+                box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .time-left {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: wrap !important; 
+            }
+            .status-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto 25px auto; width: 100%; }
+            .status-card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; overflow: hidden; }
+            .status-info { display: flex; flex-direction: column; min-width: 0; }
+            .status-label { 
+                font-family: 'Inter', 'Segoe UI', sans-serif; 
+                font-weight: bold; 
+                font-size: clamp(0.95rem, 1.8vw, 1.0rem) !important;
+                padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px) !important; 
+                color: #e01f1f;
+            }
+            .status-value { 
+                font-family: 'Inter', 'Segoe UI', sans-serif; 
+                font-size: 1.0rem; 
+                font-weight: bold; 
+                color: #2f3542; 
+                margin-top: 3px; 
+                white-space: nowrap; 
+                overflow: hidden; 
+                text-overflow: ellipsis; 
+            }
+            .status-dot { 
+                width: 12px; 
+                height: 12px; 
+                border-radius: 50%; 
+                background: #e74c3c; 
+                flex-shrink: 0; 
+                margin-left: 10px; 
+            }
+            #live-clock {
+                font-size: clamp(0.95rem, 2.5vw, 1.15rem) !important;
+                font-weight: bold;
+            }
+             #SendSerial {
+                flex-grow: 1;
+                background: #2d2d2d;
+                color: #00ff00;
+                border: 1px solid #444;
+                border-radius: 4px;
+                font-family: monospace;
+                outline: none;
+                transition: none;
+                font-size: clamp(0.55rem, 1.8vw, 1.05rem) !important;
+                padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px) !important; 
+            }
+            #SendSerial::placeholder {
+                font-size: 0.95rem !important; 
+                color: #888888; 
+                font-family: monospace; 
+                font-weight: normal;
+            }
+            #SendSerial::-webkit-input-placeholder {
+                font-size: 0.95rem !important;
+                color: #888888;
+            }
+
+            .rooms { 
+                display: grid; 
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+                gap: 20px; 
+                max-width: 1200px; 
+                margin: 0 auto 25px auto; 
+                width: 100%; 
+                box-sizing: border-box;
+            }
+            .room { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; }
+            .room:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
+            .room-title { 
+                font-family: monospace;
+                font-size: clamp(1.05rem, 2vw, 1.15rem) !important;
+                font-weight: bold; 
+                border-bottom: 2px solid #f1f2f6; 
+                padding-bottom: 12px; 
+                margin-bottom: 15px; 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center; 
+                color: #2c3e50; 
+            }
+            .room-actions { display: flex; gap: 6px; flex-shrink: 0; }
+            .room-locked {
+                opacity: 0.4 !important;       
+                pointer-events: none !important; 
+                user-select: none !important;  
+                filter: grayscale(80%);         
+                transition: all 0.3s ease;     
+            }
+            .device { 
+                color: #053df7; 
+                font-family: monospace;
+                font-size: 1.3rem; 
+                line-height: 1.5; 
+            }
+            .sensor-grid { 
+                display: grid; 
+                grid-template-columns: 1fr 1fr; 
+                gap: 10px; margin-top: 15px; 
+                width: 100%; 
+            }
+            .rssi-val {
+                color: #3498db;     
+                font-weight: bold; 
+            }
+            .sensor {
+                    background: #f8f9fa; 
+                    padding: 10px; 
+                    border-radius: 8px; 
+                    border-left: 4px solid #3498db;
+                    min-width: 0; display: flex;
+                    flex-direction: column;
+                    align-items: center;  
+                    text-align: center;  
                     }
-                    dropdown.appendChild(opt);
-                });
+            .sensor-name { 
+                    font-size: 0.95rem; color: #e01f1f; 
+                    font-weight: bold;
+                    letter-spacing: 0.5px; 
+                }
+            .sensor-value { 
+                    font-size: clamp(1.1rem, 2.2vw, 1.4rem) !important;
+                    font-weight: 900;
+                    margin-top: 5px; 
+                    color: #fca903; 
+                    white-space: nowrap; 
+                    overflow: hidden; 
+                    text-overflow: ellipsis;
+                }
+            .btn { 
+                font-size: clamp(0.85rem, 1.8vw, 1.05rem) !important;
+                padding: clamp(5px, 1.2vw, 10px)  !important;
+                border: none; 
+                border-radius: 5px; 
+                cursor: pointer; 
+                font-weight: bold; 
+                transition: background 0.2s, 
+                transform 0.1s; 
+                white-space: nowrap; 
             }
-        };
-        
-        websocket.onclose = function() {
-            setTimeout(khoiTaoWebsocket, 2000); // Tự kết nối lại sau 2 giây nếu rớt
-        };
+            .scan-btn { background: #3498db; color: white; }
+            .btn-disabled {
+                opacity: 0.3 !important;       
+                pointer-events: none !important; 
+                cursor: not-allowed !important; 
+            }
+            .save-btn { background: #2ecc71; color: white; }
+            #toast { visibility: hidden; min-width: 280px; background-color: #2c3e50; color: #fff; text-align: center; border-radius: 8px; padding: 14px; position: fixed; z-index: 999; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-left: 5px solid #2ecc71; }
+            #toast.show { 
+                visibility: visible; 
+                animation: fadein 0.5s, fadeout 0.5s 5.5s; 
+            }
+            @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
+            @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
+            .serial-box { 
+                background: #1e1e1e; 
+                border-radius: 18px; 
+                padding: 10px; 
+                max-width: 1200px ; 
+                margin: 0 auto; 
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+                border: 2px solid #fc0505; 
+                min-height: 120px ; 
+            }
+            .serial-header { 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center; 
+                border-bottom: 1px solid #333; 
+                padding-bottom: 8px; 
+                margin-bottom: 10px; 
+            }
+            .serial-title { 
+                color: #ffffff; 
+                font-weight: bold; 
+                font-size: 1.45rem; 
+                letter-spacing: 0.5px;
+            }
+            .clear-btn { 
+                background: #333; 
+                color: #aaa; 
+                padding: 6px 10px; 
+                border: 1px solid #444; 
+                border-radius: 4px; 
+                cursor: pointer; 
+                font-size: clamp(0.85rem, 2.2vw, 1.1rem) !important;
+                font-weight: clamp(900, 1.8vw, 700) !important; 
+            }
+            .clear-btn:hover { 
+                background: #fc1a03; 
+                color: white; 
+                border-color: #e74c3c; 
+            }
+            .serial-terminal { 
+                height: 180px; 
+                overflow-y: auto; 
+                font-family: 'Inter', -apple-system, sans-serif; 
+                font-size: 1.0rem; 
+                color: #00ff00; 
+                line-height: 1.4; 
+                padding: 5px; 
+                white-space: pre-wrap; 
+                word-break: break-all; 
+            }
+            .log-time { 
+                color: #f70202; 
+                margin-right: 8px; 
+                font-weight: bold; 
+            }    
+    .signal-icon {
+        display: flex;
+        align-items: flex-end; /* Ép chân các vạch sóng luôn bám sát đáy */
+        gap: 3px;              /* Khoảng cách giữa các vạch mảnh */
+        height: 24px;          /* Chiều cao tổng thể của cột sóng */
+        flex-shrink: 0;
     }
 
-    // Khởi chạy khi tải xong trang
-    window.onload = function() {
-        khoiTaoWebsocket();
-    };
+    .w-bar {
+        width: 3px;            /* Thu hẹp bề ngang thành 3px để xếp đủ 10 vạch mảnh rất đẹp */
+        background: rgba(255, 255, 255, 0.1); /* Mặc định mờ 10% khi mất sóng */
+        border-radius: 1px;
+        transition: background 0.3s ease, height 0.3s ease;
+    }
 
-    // TRÌNH XỬ LÝ NẠP FILE TỐC ĐỘ CAO CHUYỂN LOG NGẦM
-    function batDauUploadFirmware() {
-        let fileInput = document.getElementById('file-input');
-        if (fileInput.files.length === 0) {
-            alert("Vui lòng chọn file .bin trước khi nạp!");
-            return;
-        }
-        
-        if (!confirm("Bạn có chắc muốn nạp Firmware này? Mạch sẽ tự reboot sau khi hoàn tất.")) return;
-        
-        let file = fileInput.files[0];
-        let formData = new FormData();
-        formData.append("update", file, file.name); 
+    .w-bar:nth-child(1)  { height: 10%;  }
+    .w-bar:nth-child(2)  { height: 20%;  }
+    .w-bar:nth-child(3)  { height: 30%;  }
+    .w-bar:nth-child(4)  { height: 40%;  }
+    .w-bar:nth-child(5)  { height: 50%;  }
+    .w-bar:nth-child(6)  { height: 60%;  }
+    .w-bar:nth-child(7)  { height: 70%;  }
+    .w-bar:nth-child(8)  { height: 80%;  }
+    .w-bar:nth-child(9)  { height: 90%;  }
+    .w-bar:nth-child(10) { height: 100%; }
 
-        document.getElementById('prg-container').style.display = 'block';
-        let prgBar = document.getElementById('prg-bar');
-        let btnSubmit = document.getElementById('btn-submit-update');
-        btnSubmit.disabled = true;
-        btnSubmit.style.opacity = "0.5";
+    .w-bar.level-active {
+        background: #00ff00 !important; /* Màu xanh lá công nghệ rực rỡ */
+        box-shadow: 0 0 6px rgba(0, 255, 0, 0.6); /* Tạo hiệu ứng lóe sáng nhẹ */
+    }
+        </style>
+        </head>
+        <body>
+           <div class="time-box">
+            <div class="clock-box">
+                <span class="time-value" id="live-clock">00:00:00 - 01/01/2026</span>
+                </div class="time-left"> <select class="time-select" id="mode-select" onchange="sendmode(this.value)">
+                <option value="mode_auto">Chế Độ: Tự Động</option>
+                <option value="mode_manual">Chế Độ: Thủ Công</option>
+                <option value="mode_test">Chế Độ: Chớp  Vàng</option>
+                </select><select class="mac-select" id="mac-list-dropdown" onchange="if(this.value) websocket.send(JSON.stringify({action:'select_mac', value:this.value}));">
+                <option value="">-- DANH SÁCH MAC --</option></select>
+                <input type="time" step="1" class="time-select" id="timer-input" style="color:#ff9f43; font-family:monospace; font-size:1.2rem; padding:8px 10px;">
+                <button class="btn" style="background:#ff9f43; color:white; padding:10px 14px; font-size:1.1rem;" onclick="sendtimer(document.getElementById('timer-input').value)">📤 Gửi</button>
+            </div>            
+           </div>
+
+            <div class="status-bar" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto 25px auto; width: 100%;">
+            <div class="status-card" style="display: flex; align-items: center; width: 100%;">
+           <div class="status-info" style="flex-grow: 1; width: 100%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid #f1f2f6; padding-bottom: 6px; margin-bottom: 6px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="status-label" style="margin: 0;">WebSocket</span>
+                    <div class="status-dot" id="dot-io" style="margin: 0; width: 10px; height: 10px;"></div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="status-label" style="margin: 0; font-size: 1.0rem; ">PLC S7-1200</span>
+                    <div class="status-dot" id="dot-s7" style="background: #e74c3c; margin: 0; width: 10px; height: 10px;"></div>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <span class="status-value" id="web-status" style="font-size: 1rem; margin: 0;">Đang kết nối...</span>
+                <span class="status-value" style="font-size: 1rem; margin: 0;"><b id="s7-status" style="color: #e74c3c;">DisConnected</b></span>
+            </div>
+                
+            </div>
+            </div>
+        <div class="status-card" style="display: flex; align-items: center; width: 100%;">
+            <div class="status-info" style="flex-grow: 1; width: 100%;">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid #f1f2f6; padding-bottom: 6px; margin-bottom: 6px;">
+                <span class="status-label" style="margin: 0;">Trạng Thái Kết Nối</span>
+                <span class="status-label" style="margin: 0; font-size: 0.75rem; color: #888888;">Version</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <span class="status-value" id="total-nodes" style="font-size: 1rem; margin: 0;">0 / 3 Tủ </span>
+                <span class="status-value" style="font-size: 1rem; margin: 0; font-family: monospace; color: #3498db;"><b id="web-version">V:0.0 - ID 1: 00000000</b></span>
+            </div>
+            
+        </div>
+        <div style="font-size: 1.3rem; line-height: 1; margin-left: 15px; flex-shrink: 0;">📡</div>
+    </div>
+        <div class="status-card">
+                <div class="status-info"><span class="status-label">Tín Hiệu Tổng (TXD)</span><span class="status-value" id="gateway-rssitx">Chưa rõ</span></div>
+                <div style="font-size: 1.3rem; line-height: 1;">📶</div>
+         </div>
+             </div>
+             <div id="rooms" class="rooms" >
+                    <div class="room room-locked" id="node-Module_1"> <div class="room-title">
+                        <span class="status-label"> Tủ 1</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_1')">🔍 Quét</button><button class="btn save-btn" onclick="savenode('Module_1')">💾 Lưu</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_1')">🗑️ Xóa</button></div></div>
+                        <div class="device">📶 RSSI RXD: <span class="rssi-val">-127 dBm</span>
+                        <div class="sensor-grid"><div class="sensor">
+                        <div class="sensor-name">🌅 Nhiệt độ</div>
+                        <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
+                        <div class="sensor-name">💧 Độ ẩm</div>
+                        <div class="sensor-value hum-val">0.0%</div></div><div class="sensor">
+                        <div class="sensor-name">🛰️ Trạng Thái</div>
+                        <div class="sensor-value status-val">OFF line</div>
+                        </div><div class="sensor">
+                        <div class="sensor-name">🆔 CHIP ID</div>
+                        <div class="sensor-value chip-val">Chưa rõ</div>
+                        </div></div></div></div>
+                    <div class="room room-locked" id="node-Module_2"><div class="room-title">
+                        <span class="status-label"> Tủ 2</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_2')">🔍 Quét</button><button class="btn save-btn" onclick="savenode('Module_2')">💾 Lưu</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_2')">🗑️ Xóa</button></div></div>
+                        <div class="device">📶 RSSI RXD: <span class="rssi-val">-127 dBm</span>
+                        <div class="sensor-grid"><div class="sensor">
+                        <div class="sensor-name">🌅 Nhiệt độ</div>
+                        <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
+                        <div class="sensor-name">💧 Độ ẩm</div>
+                        <div class="sensor-value hum-val">0.0%</div></div><div class="sensor">
+                        <div class="sensor-name">🛰️ Trạng Thái</div>
+                        <div class="sensor-value status-val">OFF line</div>
+                        </div><div class="sensor">
+                        <div class="sensor-name">🆔 CHIP ID</div>
+                        <div class="sensor-value chip-val">Chưa rõ</div>
+                        </div></div></div></div>
+                    <div class="room room-locked" id="node-Module_3"><div class="room-title">
+                        <span class="status-label"> Tủ 3</span><div class="room-actions"><button class="btn scan-btn" onclick="scannode('Module_3')">🔍 Quét</button><button class="btn save-btn" onclick="savenode('Module_3')">💾 Lưu</button><button class="btn clear-btn" style="background:#e74c3c;color:white;" onclick="deletenode('Module_3')">🗑️ Xóa</button></div></div>
+                        <div class="device">📶 RSSI RXD: <span class="rssi-val">-127 dBm</span>
+                        <div class="sensor-grid"><div class="sensor">
+                        <div class="sensor-name">🌅 Nhiệt độ</div>
+                        <div class="sensor-value temp-val">0.0°C</div></div><div class="sensor">
+                        <div class="sensor-name">💧 Độ ẩm</div>
+                        <div class="sensor-value hum-val">0.0%</div></div><div class="sensor">
+                        <div class="sensor-name">🛰️ Trạng Thái</div>
+                        <div class="sensor-value status-val">OFF line</div>
+                        </div><div class="sensor">
+                        <div class="sensor-name">🆔 CHIP ID</div>
+                        <div class="sensor-value chip-val">Chưa rõ</div>
+                        </div></div></div></div> 
+                    </div>
+                        <div class="serial-box">
+                            <div class="serial-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap !important; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid #fc0505; gap: 12px 20px;">                                       
+                                <span class="serial-title" style="white-space: nowrap; font-weight: bold; color: #edf1f2; font-size: clamp(0.95rem, 2vw, 1.0rem) !important; order: 1;">📟 Serial Monitor</span>
+                                    <div style="flex-shrink: 0; order: 2;">
+                                        <button class="clear-btn" style="white-space: nowrap;" onclick="clearSerialLog()">Xóa</button>
+                                    </div>                                        
+                                    <div style="display: flex; align-items: center; gap: 10px; flex-grow: 1; width: 100%; max-width: auto  !important; margin: 0 auto 0 0; order: 3;">
+                                        <input type="text" id="SendSerial" placeholder="Message (Enter to send)" style="flex-grow: 1; min-width: auto !important; background: #2d2d2d; color: #00ff00; border: 1px solid #444; border-radius: 4px; font-family: monospace; outline: none; transition: none; font-size: clamp(0.85rem, 1.8vw, 1.05rem) !important; padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 14px) !important;" onkeydown="if(event.key==='Enter') sendSerialCmd(this.value)">
+                                        <button class="clear-btn" style="border-color: #00ff00; color: #00ff00; white-space: nowrap;" onclick="sendSerialCmd(document.getElementById('SendSerial').value)">Gửi</button>
+                                    </div>
+                                </div>
+                            <div class="serial-terminal" id="serial-terminal"></div>
+                        </div>
+                    <div id="toast">Thông báo hệ thống</div>
+                <script>
+                    var loc=window.location;
+                    var prefix=loc.protocol === "https:"?"wss://":"ws://";
+                    var gateway=prefix.concat(loc.host,"/ws");
+                    var websocket;
+                    function logToTerminal(rawText) {
+                        var term = document.getElementById('serial-terminal');
+                        var now = new Date();
+                        var timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + ":" + String(now.getSeconds()).padStart(2, '0');
+                        var newLog = document.createElement('div');
+                        newLog.innerHTML = '<span class="log-time">[' + timeStr + ']</span>' + rawText;
+                        term.appendChild(newLog);
+                        term.scrollTop = term.scrollHeight;
+                        if (term.children.length > 50) { term.removeChild(term.firstChild); 
+                        }
+                        }
+
+                function clearSerialLog(){document.getElementById('serial-terminal').innerHTML='';}
+                function sendmode(val){
+                    if(websocket&&websocket.readyState===1){
+                        websocket.send(JSON.stringify({action:"select_mode",value:val}));
+                    }updateModeColor(val);
+                }
+                function updateModeColor(val) {
+                    var modeEl = document.getElementById('mode-select');
+                    if (!modeEl) return;                    
+                    if (val === "mode_auto") {
+                        modeEl.style.color = "#00ff00";     
+                    } else if (val === "mode_manual") {
+                        modeEl.style.color = "#ff0000";     
+                    } else if (val === "mode_test") {
+                        modeEl.style.color = "#ffff00";     
+                    }
+                }
+                function sendtimer(val) {
+                    if (!val || !websocket || websocket.readyState !== 1) return;
+                    websocket.send(JSON.stringify({action: "set_timer", value: val}));
+                }
+                function sendSerialCmd(val) {
+                    if (!val || !websocket || websocket.readyState !== 1) return;
+                    websocket.send(JSON.stringify({action: "serial_cmd", value: val}));
+                    logToTerminal("<span style='color:#ff0505;'>Send-> " + val + "</span>");
+                    document.getElementById('SendSerial').value = ''; 
+                }
+                function initWebSocket(){
+                    websocket=new WebSocket(gateway);
+                    websocket.onopen=function(){
+                        document.getElementById('web-status').textContent="Đã kết nối";
+                        document.getElementById('dot-io').style.background="#2ecc71";
+                    };
+                    websocket.onclose=function(){
+                        document.getElementById('web-status').textContent="Mất kết nối";
+                        document.getElementById('dot-io').style.background="#e74c3c";
+                        setTimeout(initWebSocket,2000);
+                    };
+                    websocket.onmessage=runmsg;
+                }
+                window.addEventListener('beforeunload', function () {
+                    if (websocket && websocket.readyState === 1) {
+                        websocket.close(1000, "Trang Web đã đóng");
+                    }
+                });
+                document.addEventListener("DOMContentLoaded", function() { 
+                    initWebSocket(); 
+                    updateModeColor(document.getElementById('mode-select').value);
+                });
+                function showToast(msg){var el=document.getElementById("toast");
+                el.textContent="🔔 " + msg;    el.className="show";
+        setTimeout(function(){el.className=el.className.replace("show","");},5000);}
+     
+       function runmsg(evt){
+       try{var data=JSON.parse(evt.data);
+       if(data.status==="success"&&data.msg){
+       var vnmMsg=data.msg.replace('thiet bi','Tủ').replace('Node','Tủ').replace('thanh cong','thành công');
+       showToast(vnmMsg);return;}
+
+            if (data.version !== undefined && data.version !== null) {
+                document.getElementById('web-version').textContent = data.version;
+            }
+
+            if (data.mode_now !== undefined && data.mode_now !== null) {
+                document.getElementById('mode-select').value = data.mode_now;
+                updateModeColor(data.mode_now);
+            }
+            if (data.clock_now !== undefined && data.clock_now !== null) {
+                    document.getElementById('live-clock').textContent = data.clock_now.replace(' ', ' - ');
+                }
+            if (data.timer_now !== undefined && data.timer_now !== null) {
+                document.getElementById('timer-input').value = data.timer_now;
+            }
+            if(data.serial!==undefined&&data.serial!==null){
+                logToTerminal("-> "+data.serial);
+            }
+            if (data.s7_connected !== undefined && data.s7_connected !== null) {
+                var s7Txt = document.getElementById('s7-status');
+                var s7Dot = document.getElementById('dot-s7');
+                var fullString = String(data.s7_connected);
+                var prefix = fullString.substring(0, 2).toUpperCase();
+                var isConnected = (prefix === "ON" || prefix === "1_");
+                s7Txt.textContent = fullString.substring(2); 
+                s7Txt.style.color = "#010101";
+                s7Dot.style.background = isConnected ? "#2ecc71" : "#e74c3c";
+            }
         
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "/flash", true); 
-        
-        // Theo dõi tiến trình tải lên từ phía Client
-        xhr.upload.addEventListener("progress", function(e) {
-            if (e.lengthComputable) {
-                let percentage = Math.round((e.loaded / e.total) * 100);
-                if(percentage >= 100) {
-                    prgBar.style.width = "100%";
-                    prgBar.style.backgroundColor = "#ff9800"; // Chuyển màu cam khi đẩy hết file thô lên mạng
-                    prgBar.innerText = "Đang chốt bộ nhớ... (Vui lòng chờ)";
-                } else {
-                    prgBar.style.width = percentage + "%";
-                    prgBar.innerText = percentage + "%";
+            if(data.mac_list!==undefined&&Array.isArray(data.mac_list)){
+                var dropdown=document.getElementById('mac-list-dropdown');
+                var currentValue=dropdown.value;
+                dropdown.innerHTML='<option value="">-- DANH SÁCH MAC --</option>';
+                data.mac_list.forEach(function(macStr){
+                var opt=document.createElement('option');
+                    opt.value=macStr;
+                    opt.textContent = "MAC: " + macStr; 
+                    dropdown.appendChild(opt);});
+                    dropdown.value=currentValue;
+                }
+                if (data.mac_default !== undefined) {
+                        dropdown.value = data.mac_default; 
+                    }
+                var listData=Array.isArray(data)?data:(data.list||null);
+                var hOnline=data.online_count !== undefined?data.online_count:(data["Thiết bị"]!==undefined?data["Thiết bị"]:null);
+                var hRssiTx=data.rssitx !== undefined?data.rssitx:(data.rssitx1 !== undefined?data.rssitx1:null);
+                if(listData&&Array.isArray(listData)){if(hRssiTx!==null){document.getElementById('gateway-rssitx').textContent=hRssiTx ;
+                }
+                listData.forEach(function(node,index){var targetId=node.id||node.id1||node.id2||node.id3;if(!targetId||targetId.length<3){
+                if(index===0)targetId="Module_1";
+                if(index===1)targetId="Module_2";
+                if(index===2)targetId="Module_3";
+                }
+                var roomEl=document.getElementById('node-'+targetId);
+                if(roomEl){
+                    var tempVal=node.temp!==undefined?node.temp:(node.temp1!==undefined?node.temp1:(node.temp2!==undefined?node.temp2:node.temp3));
+                        if(tempVal!==undefined)roomEl.querySelector('.temp-val').textContent='🌡️'+parseFloat(tempVal).toFixed(1)+' °C';
+                    var humVal=node.hum!==undefined?node.hum:(node.hum1!==undefined?node.hum1:(node.hum2!==undefined?node.hum2:node.hum3));
+                        if (humVal !== undefined) {
+                            var hValue = parseFloat(humVal).toFixed(1); 
+                            var labelEl = roomEl.querySelectorAll('.sensor-name')[1]; 
+                            var valueEl = roomEl.querySelector('.hum-val');          
+                            
+                            if (labelEl && valueEl) {
+                                if (hValue < 20.0) {
+                                    labelEl.textContent = "🛰️ PacketSnr";
+                                    valueEl.textContent ="📡 " + hValue + " dB";
+                                    valueEl.style.color = "#3498db";     
+                                } else {
+                                    labelEl.textContent = "💧 Độ ẩm";
+                                    valueEl.textContent = hValue + "%";
+                                    valueEl.style.color = "";            
+                                }
+                            }
+                        }
+                        
+                        var chipIdVal=node["chip id "]||node["chip_id"]||node["chip id 1"]||node["chip id 2"]||node["chip id 3"];
+                        if(chipIdVal !== undefined) roomEl.querySelector('.chip-val').textContent = chipIdVal;
+                            if (chipIdVal !== undefined && chipIdVal !== null) {
+                                var txtCheck = String(chipIdVal).trim();
+                                var btnScan = roomEl.querySelector('.scan-btn'); 
+                                if (btnScan) {
+                                    if (txtCheck !== "" && txtCheck !== "Chưa rõ") {
+                                        btnScan.classList.add('btn-disabled'); 
+                                    } else {
+                                        btnScan.classList.remove('btn-disabled'); 
+                                    }
+                                }
+                            }
+
+                    if (node.rssi !== undefined) {
+                    var rssiEl = roomEl.querySelector('.rssi-val');
+                    var rssiStr = String(node.rssi);
+                    rssiEl.textContent = rssiStr;
+                    var rssiNum = parseInt(rssiStr);
+                    if (!isNaN(rssiNum)) {
+                        if (rssiNum >= -80) {rssiEl.style.color = "#2ecc71"; 
+                        } else if (rssiNum < -80 && rssiNum >= -99) { rssiEl.style.color = "#e67e22"; 
+                        } else { rssiEl.style.color = "#e74c3c";
+                        }
+                    }
+                }
+
+        var loraVal=node.lora!==undefined?node.lora:(node.lora1!==undefined?node.lora1:(node.lora2!==undefined?node.lora2:(node["Trạng Thái"]!==undefined?node["Trạng Thái"]:node.relay)));
+            if(loraVal!==undefined){var statusEl=roomEl.querySelector('.status-val');
+            statusEl.textContent=loraVal;var checkVal=String(loraVal).toUpperCase().trim();
+            if(checkVal.includes("ON")||checkVal==="TRUE"||checkVal==="1"){
+                statusEl.style.color="#2ecc71";
+            }
+             else 
+                if(checkVal.includes("OFF")||checkVal==="FALSE"||checkVal==="0"){statusEl.style.color="#e74c3c";}else{statusEl.style.color="#2f3542";}}}});
+                    if(hOnline!==null){document.getElementById('total-nodes').textContent=hOnline+" / "+listData.length+" Tủ";
+                       if (hOnline !== null && hOnline !== undefined) {
+                            var count = parseInt(hOnline);
+                            var tu1 = document.getElementById('node-Module_1');
+                            var tu2 = document.getElementById('node-Module_2');
+                            var tu3 = document.getElementById('node-Module_3');
+                            
+                            if (tu1 && tu2 && tu3) {
+                                if (count === 0) {
+                                    tu1.classList.add('room-locked'); 
+                                    tu2.classList.add('room-locked'); 
+                                    tu3.classList.add('room-locked');
+                                } else if (count === 1) {
+                                    tu1.classList.remove('room-locked');
+                                    tu2.classList.add('room-locked'); 
+                                    tu3.classList.add('room-locked');
+                                } else if (count === 2) {
+                                    tu1.classList.remove('room-locked'); 
+                                    tu2.classList.remove('room-locked'); 
+                                    tu3.classList.add('room-locked');
+                                } else if (count >= 3) {
+                                    tu1.classList.remove('room-locked'); 
+                                    tu2.classList.remove('room-locked'); 
+                                    tu3.classList.remove('room-locked');
+                                }
+                            }
+                        }        
+                    }
                 }
             }
-        });
-        
-        // Trả phản hồi thành công ngay khi ESP32 nhận xong dữ liệu
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                XửLýThànhCôngOta();
-            } else {
-                XửLýThấtBạiOta(xhr.responseText);
-            }
-        };
-
-        // Đề phòng mạch ngắt kết nối quá nhanh để xử lý lưu phân vùng ngầm
-        xhr.onerror = function() {
-            if (prgBar.style.backgroundColor === "rgb(255, 152, 0)") {
-                XửLýThànhCôngOta();
-            } else {
-                XửLýThấtBạiOta("Mất kết nối với thiết bị");
-            }
-        };
-        
-        function XửLýThànhCôngOta() {
-            prgBar.style.backgroundColor = '#00ff66'; // Màu xanh lá rực rỡ báo xong
-            prgBar.style.color = '#000';
-            prgBar.innerText = "NẠP THÀNH CÔNG! REBOOT...";
             
-            setTimeout(function() {
-                alert("Nâng cấp thành công! Hệ thống đang tự khởi động lại. Bấm OK để tự động làm mới trang sau 5 giây.");
-                setTimeout(function() {
-                    window.location.reload(); // Tự động F5 làm mới trang
-                }, 5000); 
-            }, 500);
-        }
+            catch(e){console.error("Loi:",e);}}
+            function scannode(id){
+            if(websocket&&websocket.readyState===1){
+                websocket.send(JSON.stringify({action:"scan",node:id}));}}
+                function savenode(id){
+                    if(websocket&&websocket.readyState===1){
+                        websocket.send(JSON.stringify({action:"save",node:id}));
+                        }
+                    }
+                function deletenode(id) {
+                    if (websocket && websocket.readyState === 1) {
+                        websocket.send(JSON.stringify({action: "delete", node: id}));
+                        var roomEl = document.getElementById('node-' + id);
+                        if (roomEl) {
+                            roomEl.querySelector('.temp-val').textContent = '0.0°C';
+                            roomEl.querySelector('.hum-val').textContent = '0.0%';
+                            roomEl.querySelector('.chip-val').textContent = 'Chưa rõ';
+                            roomEl.querySelector('.rssi-val').textContent = '-127 dBm';
+                            var btnScan = roomEl.querySelector('.scan-btn');
+                            if (btnScan) {btnScan.classList.remove('btn-disabled');}
+                            var statusEl = roomEl.querySelector('.status-val');
+                            statusEl.textContent = 'OFF line';
+                            statusEl.style.color = '#e74c3c';
+                        }
+                    }
+                }
+            </script>
+        </body>
+    </html>
 
-        function XửLýThấtBạiOta(errorText) {
-            prgBar.style.backgroundColor = '#ff3333';
-            prgBar.style.color = '#fff';
-            prgBar.innerText = "LỖI NẠP FILE!";
-            alert("Lỗi: " + (errorText || "Thiết bị không phản hồi"));
-            btnSubmit.disabled = false;
-            btnSubmit.style.opacity = "1";
-        }
-
-        xhr.send(formData);
-    }
-</script>
-</body>
-</html>
-)=====";
-
+)rawliteral";
 #endif
